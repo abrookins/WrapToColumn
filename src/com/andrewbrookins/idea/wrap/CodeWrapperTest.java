@@ -54,6 +54,14 @@ public class CodeWrapperTest {
     }
 
     @Test
+    public void testFillParagraphsRetainsSpaceIndent() throws Exception {
+        String text = wrapper.fillParagraphs("    This is my long indented " +
+            "string. It's too long to fit on one line, uh oh! What will happen?");
+        assertEquals("    This is my long indented string. It's too long to fit " +
+            "on one line, uh oh! What\n    will happen?", text);
+    }
+
+    @Test
     public void testFill() throws Exception {
 
     }

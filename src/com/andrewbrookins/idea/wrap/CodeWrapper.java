@@ -107,19 +107,15 @@ public class CodeWrapper {
      */
     public ArrayList<String> wrap(String text) {
         String lineSeparator = System.getProperty("line.separator");
+        text = dewrap(text);
+        String[] firstLineData = splitIndent(text);
         String[] lines = WordUtils.wrap(text, options.width).split(lineSeparator);
         ArrayList<String> result = new ArrayList<String>();
-        String[] firstLineData = splitIndent(lines[0]);
 
-        for (int i = 0; i < lines.length; i++) {
-            if (i == 0) {
-                result.add(lines[i]);
-                continue;
-            }
-
-            String[] lineData = splitIndent(lines[i]);
-            // Use indent from the first line on subsequent lines.
-            result.add(firstLineData[0] + lineData[i]);
+        for (String line : lines) {
+            // Use indent from the first line on it and all subsequent lines.
+            String[] lineData = splitIndent(line);
+            result.add(firstLineData[0] + lineData[1]);
         }
 
         return result;
