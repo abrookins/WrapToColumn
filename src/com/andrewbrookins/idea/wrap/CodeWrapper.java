@@ -5,17 +5,37 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.intellij.openapi.diagnostic.Logger;
 import org.apache.commons.lang.WordUtils;
 
 
+/*
+ * Code-aware text wrapper.
+ *
+ * Wrap comments like emacs fill-paragraph command - long comments turn
+ * into multiple comments, not one comment followed by code.
+ *
+ * This code was ported from Nir Soffer's codewrap library:
+ *   https://pypi.python.org/pypi/codewrap/
+ */
 public class CodeWrapper {
     private static class Options {
-        String paragraphSeparatorPattern = "\\n\\s*\\n";
+        // A string with a newline above and below it is a paragraph.
+        String paragraphSeparatorPattern = "(\\n|\\r\\n)\\s*(\\n|\\r\\n)";
+
+        // A string containing a comment or empty space is considered an indent.
         String indentPattern = "^\\s*(#+|//+|;+)?\\s*";
+
+        // New lines appended to text during wrapping will use this character.
+        String lineSeparator = System.getProperty("line.separator");
+
+        // The column width to wrap text to.
         Integer width = 80;
     }
 
+    /*
+     Data about a line that has been split into two pieces: the indent portion
+     of the string, if one exists, and the rest of the string.
+     */
     private static class LineData {
         String indent = "";
         String rest = "";
@@ -27,7 +47,6 @@ public class CodeWrapper {
     }
 
     private Options options;
-    private static final Logger log = Logger.getInstance(CodeWrapper.class);
 
     public CodeWrapper(Options options) {
         this.options = options;
@@ -72,8 +91,8 @@ public class CodeWrapper {
         String builtResult = result.toString();
 
         // Keep trailing text newline.
-        if (text.endsWith("\n")) {
-            builtResult += "\n";
+        if (text.endsWith(options.lineSeparator)) {
+            builtResult += options.lineSeparator;
         }
 
         return builtResult;
@@ -96,7 +115,7 @@ public class CodeWrapper {
             // If this is a multi-paragraph list and we aren't at the end,
             // add a new line.
             if (size > 0 && i < size - 1) {
-                paragraph += '\n';
+                paragraph += options.lineSeparator;
             }
 
             result.append(paragraph);
@@ -116,11 +135,10 @@ public class CodeWrapper {
      * @return lines filled with current width
      */
     public ArrayList<String> wrap(String text) {
-        String lineSeparator = System.getProperty("line.separator");
         text = dewrap(text);
         LineData firstLineData = splitIndent(text);
-        String[] lines = WordUtils.wrap(
-            text, options.width - firstLineData.indent.length()).split(lineSeparator);
+        Integer width = options.width - firstLineData.indent.length();
+        String[] lines = WordUtils.wrap(text, width).split(options.lineSeparator);
         ArrayList<String> result = new ArrayList<String>();
 
         for (int i = 0; i < lines.length; i++) {
