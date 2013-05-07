@@ -16,6 +16,16 @@ public class CodeWrapper {
         Integer width = 80;
     }
 
+    private static class LineData {
+        String indent = "";
+        String rest = "";
+
+        public LineData(String indent, String rest) {
+            this.indent = indent;
+            this.rest = rest;
+        }
+    }
+
     private Options options;
     private static final Logger log = Logger.getInstance(CodeWrapper.class);
 
@@ -108,14 +118,19 @@ public class CodeWrapper {
     public ArrayList<String> wrap(String text) {
         String lineSeparator = System.getProperty("line.separator");
         text = dewrap(text);
-        String[] firstLineData = splitIndent(text);
-        String[] lines = WordUtils.wrap(text, options.width).split(lineSeparator);
+        LineData firstLineData = splitIndent(text);
+        String[] lines = WordUtils.wrap(
+            text, options.width - firstLineData.indent.length()).split(lineSeparator);
         ArrayList<String> result = new ArrayList<String>();
 
-        for (String line : lines) {
+        for (int i = 0; i < lines.length; i++) {
+            String line = lines[i];
+            if (i == 0) {
+                LineData lineData = splitIndent(line);
+                line = lineData.rest;
+            }
             // Use indent from the first line on it and all subsequent lines.
-            String[] lineData = splitIndent(line);
-            result.add(firstLineData[0] + lineData[1]);
+            result.add(firstLineData.indent + line);
         }
 
         return result;
@@ -146,7 +161,7 @@ public class CodeWrapper {
                 continue;
             }
 
-            String unindentedLine = ' ' + splitIndent(lines[i])[1];
+            String unindentedLine = ' ' + splitIndent(lines[i]).rest;
             // Add rest of lines removing indent
             result.append(unindentedLine);
         }
@@ -163,19 +178,18 @@ public class CodeWrapper {
      * @param text text to remove indents from
      * @return indent string, rest
      */
-    public String[] splitIndent(String text) {
+    public LineData splitIndent(String text) {
         Pattern pattern = Pattern.compile(options.indentPattern);
         Matcher matcher = pattern.matcher(text);
-        String indent = "";
-        String unindented = text;
+        LineData lineData = new LineData("", text);
 
         // Only break on the first indent-worthy sequence found, to avoid any
         // weirdness with comments-embedded-in-comments.
         if (matcher.find()) {
-            indent = matcher.group();
-            unindented = text.substring(matcher.end(), text.length());
+            lineData.indent = matcher.group();
+            lineData.rest = text.substring(matcher.end(), text.length());
         }
 
-        return new String[]{indent, unindented};
+        return lineData;
     }
 }

@@ -17,16 +17,15 @@ public class CodeWrapperTest {
     public void testCreateWithoutOptions() throws Exception {
         String original = "// This is my text.\n// This is my text.\n";
         String text = wrapper.fillParagraphs(original);
-        assertEquals(original, text);
+        assertEquals("// This is my text. This is my text.\n", text);
     }
 
     @Test
     public void testFillParagraphsOneLongLine() throws Exception {
         String text = wrapper.fillParagraphs("// This is my very long line of text. " +
             "This is my very long line of text. This is my very long line of text.\n");
-        System.out.println(text);
-        assertEquals("// This is my very long line of text. This is my very long line of text. This is\n" +
-            "// my very long line of text.\n", text);
+        assertEquals("// This is my very long line of text. This is my very long line of text. This\n" +
+            "// is my very long line of text.\n", text);
     }
 
     @Test
@@ -34,14 +33,14 @@ public class CodeWrapperTest {
         String text = wrapper.fillParagraphs("// This is my very long line of text. " +
             "This is my very long line of text. This is my very long line of text.\n\n" +
             "// This is a second paragraph.\n");
-        assertEquals("// This is my very long line of text. This is my very long line of text. This is\n" +
-            "// my very long line of text.\n\n// This is a second paragraph.\n", text);
+        assertEquals("// This is my very long line of text. This is my very long line of text. This\n" +
+            "// is my very long line of text.\n\n// This is a second paragraph.\n", text);
     }
 
     @Test
     public void testFillParagraphsDoesNotCombineTwoShortLines() throws Exception {
         String text = wrapper.fillParagraphs("// This is my text.\n// This is my text.");
-        assertEquals("// This is my text.\n// This is my text.", text);
+        assertEquals("// This is my text. This is my text.", text);
     }
 
     @Test
@@ -58,7 +57,7 @@ public class CodeWrapperTest {
         String text = wrapper.fillParagraphs("    This is my long indented " +
             "string. It's too long to fit on one line, uh oh! What will happen?");
         assertEquals("    This is my long indented string. It's too long to fit " +
-            "on one line, uh oh! What\n    will happen?", text);
+            "on one line, uh oh!\n    What will happen?", text);
     }
 
     @Test

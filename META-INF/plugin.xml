@@ -5,7 +5,10 @@
   <vendor email="a@andrewbrookins.com" url="http://andrewbrookins.com">Andrew Brookins</vendor>
 
   <description><![CDATA[
-      Wrap selected text to the specified column width.<br>
+      Wrap selected text to the specified column width. Similar to the Emacs<br>
+      command 'Fill Paragraph' and Vim's `gq` (format lines) command. A<br>
+      replacement for the native Intellij Fill Paragraph command, which hasn't<br>
+      ever worked correctly for me.
       ]]></description>
 
   <change-notes><![CDATA[
