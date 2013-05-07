@@ -21,5 +21,6 @@ your keymap.
 
 LICENSE
 
-This plugin is licensed under the GPL because I derived some of its code from
-a Python plugin released under that license. See LICENSE.
+This plugin is licensed under the GPLv2. I would have preferred a different
+license, but I derived some code from a Python plugin released under GPLv2.
+Sorry. See COPYING.
