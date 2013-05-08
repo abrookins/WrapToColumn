@@ -16,10 +16,10 @@ editor of choice, go to the Preferences window -> Plugins -> Install plugin
 from disk, then choose the WrapToColumn.zip file located in the source repo.
 
 
-COMMAND
+KEYBOARD SHORTCUT
 
-The default command Command+Control+Shift+W. Feel free to change that beast in
-your keymap.
+The default keyboard shortcut is Command+Control+Shift+W. Feel free to change
+that beast in your keymap.
 
 
 LICENSE
