@@ -1,7 +1,7 @@
 ABOUT
 
-This plugin wraps selected text or the current line, if no text is selected, to
-the column width specified in the editor's "Right Margin (columns)" setting.
+This plugin wraps selected text or, if no text is selected, the current line
+to the column width specified in the editor's "Right Margin (columns)" setting.
 
 This is a replacement for the Fill Paragraph command, which doesn't work for me.
 
