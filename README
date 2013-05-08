@@ -8,9 +8,12 @@ This is a replacement for the Fill Paragraph command, which doesn't work for me.
 
 INSTALLING
 
-Download the source, open your Intellij editor of choice, go to the Preferences
-window -> Plugins -> Install plugin from disk, then choose the WrapToColumn.zip
-file located in the source repo.
+You can install this plugin directly from an Intellij editor inside the
+Preferences -> Plugins -> Browse repositories... window.
+
+To install the latest zip from GitHub, clone the repository, open your Intellij
+editor of choice, go to the Preferences window -> Plugins -> Install plugin
+from disk, then choose the WrapToColumn.zip file located in the source repo.
 
 
 COMMAND
