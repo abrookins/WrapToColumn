@@ -18,12 +18,12 @@ import org.apache.commons.lang.WordUtils;
  *   https://pypi.python.org/pypi/codewrap/
  */
 public class CodeWrapper {
-    private static class Options {
+    public static class Options {
         // A string with a newline above and below it is a paragraph.
         String paragraphSeparatorPattern = "(\\n|\\r\\n)\\s*(\\n|\\r\\n)";
 
         // A string containing a comment or empty space is considered an indent.
-        String indentPattern = "^\\s*(#+|//+|;+)?\\s*";
+        String indentPattern = "^\\s*(\\*|/\\*+|#+|//+|;+)?\\s*";
 
         // New lines appended to text during wrapping will use this character.
         String lineSeparator = System.getProperty("line.separator");
@@ -138,17 +138,34 @@ public class CodeWrapper {
         text = dewrap(text);
         LineData firstLineData = splitIndent(text);
         Integer width = options.width - firstLineData.indent.length();
-        String[] lines = WordUtils.wrap(text, width).split(options.lineSeparator);
+        String[] lines = WordUtils.wrap(text, width, options.lineSeparator, false)
+            .split(options.lineSeparator);
         ArrayList<String> result = new ArrayList<String>();
+
+        // If the first line is a multi-line comment opener, subsequent lines
+        // should use a star (*) as the indent. The final indent should use a
+        // star and forward-slash (*/).
+        boolean isMultiLineOpener = firstLineData.indent.contains("/*");
+        String indent =  isMultiLineOpener ? "* " : firstLineData.indent;
 
         for (int i = 0; i < lines.length; i++) {
             String line = lines[i];
+            String lineIndent = indent;
+
             if (i == 0) {
                 LineData lineData = splitIndent(line);
+                lineIndent = firstLineData.indent;
                 line = lineData.rest;
             }
+
+            // On the final line of a multi-line comment opened with /** or
+            // /*, add a newline and */ to close the comment.
+            if (i == lines.length - 1 && isMultiLineOpener) {
+                line = line + options.lineSeparator + "*/";
+            }
+
             // Use indent from the first line on it and all subsequent lines.
-            result.add(firstLineData.indent + line);
+            result.add(lineIndent + line);
         }
 
         return result;

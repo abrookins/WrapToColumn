@@ -1,18 +1,33 @@
 <idea-plugin version="2">
   <id>com.andrewbrookins.wrap_to_column</id>
   <name>Wrap to Column</name>
-  <version>0.1</version>
+  <version>0.1.2</version>
   <vendor email="a@andrewbrookins.com" url="http://andrewbrookins.com">Andrew Brookins</vendor>
 
   <description><![CDATA[
-      Wrap selected text to the specified column width. Similar to the Emacs<br>
-      command 'Fill Paragraph' and Vim's `gq` (format lines) command. A<br>
-      replacement for the native Intellij Fill Paragraph command, which hasn't<br>
-      ever worked correctly for me.
+    <p>
+        Wrap selected text to the specified column width. Similar to the Emacs
+        command 'Fill Paragraph' and Vim's `gq` (format lines) command. A
+        replacement for the native Intellij Fill Paragraph command, which hasn't
+        ever worked correctly for me.
+    </p>
       ]]></description>
 
   <change-notes><![CDATA[
-      Initial commit.
+    <b>0.1.2</b>
+    <ul>
+    <li>Fix a bug on Windows</l>
+    </ul>
+
+    <b>0.1.1</b>
+    <ul>
+    <li>Better support for multi-line C-style comments.</li>
+    </ul>
+
+    <b>0.1</b>
+    <ul>
+    <li>Initial commit.</li>
+    </ul>
       ]]>
   </change-notes>
 

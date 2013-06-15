@@ -39,11 +39,14 @@ public class CodeWrapperTest {
 
     @Test
     public void testFillParagraphsWorksWithWindowsNewlines() throws Exception {
+        CodeWrapper wrapper = new CodeWrapper(new CodeWrapper.Options() {{
+            lineSeparator = "\r\n";
+        }});
         String text = wrapper.fillParagraphs("// This is my very long line of text. " +
             "This is my very long line of text. This is my very long line of text.\r\n\r\n" +
             "// This is a second paragraph.\r\n");
-        assertEquals("// This is my very long line of text. This is my very long line of text. This\n" +
-            "// is my very long line of text.\r\n\r\n// This is a second paragraph.\n", text);
+        assertEquals("// This is my very long line of text. This is my very long line of text. This\r\n" +
+            "// is my very long line of text.\r\n\r\n// This is a second paragraph.\r\n", text);
     }
 
     @Test
@@ -54,11 +57,13 @@ public class CodeWrapperTest {
 
     @Test
     public void testFillParagraphsFillsMultiLineOpener() throws Exception {
-        // This could be more graceful, I suppose.
         String text = wrapper.fillParagraphs("/** This is my text This is my long multi-" +
-            "line comment opener text. More text please.");
-        assertEquals("/** This is my text This is my long multi-" +
-            "line comment opener text. More text\nplease.", text);
+            "line comment opener text. More text please. This is yet another bunch " +
+            "of text in my test comment, so I will get multiple lines in the comment.");
+        assertEquals("/** This is my text This is my long multi-line comment opener text. More\n" +
+            "* text please. This is yet another bunch of text in my test comment, so I will\n" +
+            "* get multiple lines in the comment.\n" +
+            "*/", text);
     }
 
     @Test
@@ -67,6 +72,15 @@ public class CodeWrapperTest {
             "string. It's too long to fit on one line, uh oh! What will happen?");
         assertEquals("    This is my long indented string. It's too long to fit " +
             "on one line, uh oh!\n    What will happen?", text);
+    }
+
+    @Test
+    public void testFillParagraphsHandlesLinesWithinMultiLineComment() throws Exception {
+        String text = wrapper.fillParagraphs("* This is a long line in a multi-" +
+            "line comment block. Note the star at the beginning.\n* This is " +
+            "another line in a multi-line comment.");
+        assertEquals("* This is a long line in a multi-line comment block. Note the star at the\n" +
+            "* beginning. This is another line in a multi-line comment.", text);
     }
 
     @Test
