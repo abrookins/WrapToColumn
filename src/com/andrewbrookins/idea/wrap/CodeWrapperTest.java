@@ -38,18 +38,6 @@ public class CodeWrapperTest {
     }
 
     @Test
-    public void testFillParagraphsWorksWithWindowsNewlines() throws Exception {
-        CodeWrapper wrapper = new CodeWrapper(new CodeWrapper.Options() {{
-            lineSeparator = "\r\n";
-        }});
-        String text = wrapper.fillParagraphs("// This is my very long line of text. " +
-            "This is my very long line of text. This is my very long line of text.\r\n\r\n" +
-            "// This is a second paragraph.\r\n");
-        assertEquals("// This is my very long line of text. This is my very long line of text. This\r\n" +
-            "// is my very long line of text.\r\n\r\n// This is a second paragraph.\r\n", text);
-    }
-
-    @Test
     public void testFillParagraphsDoesNotCombineTwoShortLines() throws Exception {
         String text = wrapper.fillParagraphs("// This is my text.\n// This is my text.");
         assertEquals("// This is my text. This is my text.", text);

@@ -26,7 +26,10 @@ public class CodeWrapper {
         String indentPattern = "^\\s*(\\*|/\\*+|#+|//+|;+)?\\s*";
 
         // New lines appended to text during wrapping will use this character.
-        String lineSeparator = System.getProperty("line.separator");
+        // NOTE: Intellij always uses \n character for new lines and UI
+        // components will fail assertion checks if they receive \r\n. The
+        // correct line ending is used when saving the file.
+        String lineSeparator = "\n";
 
         // The column width to wrap text to.
         Integer width = 80;
