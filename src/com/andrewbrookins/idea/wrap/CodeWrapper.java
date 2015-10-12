@@ -1,29 +1,31 @@
 package com.andrewbrookins.idea.wrap;
 
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.WordUtils;
 
-
-/*
+/**
  * Code-aware text wrapper.
  *
- * Wrap comments like emacs fill-paragraph command - long comments turn
+ * Wrap comments like emacs wrapParagraph-paragraph command - long comments turn
  * into multiple comments, not one comment followed by code.
  *
- * This code was ported from Nir Soffer's codewrap library:
+ * This code was inspired by Nir Soffer's codewrap library:
  *   https://pypi.python.org/pypi/codewrap/
  */
 public class CodeWrapper {
     public static class Options {
-        // A string with a newline above and below it is a paragraph.
-        String paragraphSeparatorPattern = "(\\n|\\r\\n)\\s*(\\n|\\r\\n)";
+        String commentRegex = "(/\\*+|\\*/|\\*|#+|//+|;+)?";
+
+        String newlineRegex = "(\\n|\\r\\n)";
+
+        // A string that contains only two new lines demarcates a paragraph.
+        Pattern paragraphSeparatorPattern = Pattern.compile(newlineRegex + "\\s*" + commentRegex + "\\s*" + newlineRegex);
 
         // A string containing a comment or empty space is considered an indent.
-        String indentPattern = "^\\s*(\\*|/\\*+|#+|//+|;+)?\\s*";
+        Pattern indentPattern = Pattern.compile("^\\s*" + commentRegex + "\\s*");
 
         // New lines appended to text during wrapping will use this character.
         // NOTE: Intellij always uses \n character for new lines and UI
@@ -35,9 +37,9 @@ public class CodeWrapper {
         Integer width = 80;
     }
 
-    /*
-     Data about a line that has been split into two pieces: the indent portion
-     of the string, if one exists, and the rest of the string.
+    /**
+     * Data about a line that has been split into two pieces: the indent portion
+     * of the string, if one exists, and the rest of the string.
      */
     private static class LineData {
         String indent = "";
@@ -65,30 +67,29 @@ public class CodeWrapper {
     }
 
     /**
-     * Fill multiple paragraphs
+     * Wrap ``text`` to the chosen width.
      *
-     * Assume that paragraphs are separated by empty lines. Preserve
-     * the amount of white space between paragraphs.
+     * Preserve the amount of white space between paragraphs after wrapping
+     * them. A paragraph is defined as text separated by empty lines.
      *
-     * @param text the text to fill, which may contain multiple paragraphs.
-     * @return text filled to set column width.
+     * @param text the text to wrap, which may contain multiple paragraphs.
+     * @return text wrapped to `width`.
      */
-    public String fillParagraphs(String text) {
+    public String wrap(String text) {
         StringBuilder result = new StringBuilder();
-        Pattern pattern = Pattern.compile(options.paragraphSeparatorPattern);
-        Matcher matcher = pattern.matcher(text);
+        Matcher paragraphMatcher = options.paragraphSeparatorPattern.matcher(text);
         Integer textLength = text.length();
-
         Integer location = 0;
-        while (matcher.find()) {
-            String paragraph = text.substring(location, matcher.start());
-            result.append(fill(paragraph));
-            result.append(matcher.group());
-            location = matcher.end();
+
+        while (paragraphMatcher.find()) {
+            String paragraph = text.substring(location, paragraphMatcher.start());
+            result.append(wrapParagraph(paragraph));
+            result.append(paragraphMatcher.group());
+            location = paragraphMatcher.end();
         }
 
         if (location < textLength) {
-            result.append(fill(text.substring(location, textLength)));
+            result.append(wrapParagraph(text.substring(location, textLength)));
         }
 
         String builtResult = result.toString();
@@ -102,72 +103,91 @@ public class CodeWrapper {
     }
 
     /**
-     * Fill paragraph by joining wrapped lines
+     * Wrap a single paragraph of text.
      *
-     * @param text the text to fill
-     * @return text filled with current width
+     * Breaks ``paragraph`` into an array of lines of the chosen width, then
+     * joins them back into a single string.
+     *
+     * @param paragraph the paragraph to wrap
+     * @return text reflowed to chosen width
      */
-    public String fill(String text) {
-        StringBuilder result = new StringBuilder();
-        ArrayList<String> wrappedParagraphs = wrap(text);
-        int size = wrappedParagraphs.size();
+    public String wrapParagraph(String paragraph) {
+        StringBuilder resultBuilder = new StringBuilder();
+        Pattern emptyCommentPattern = Pattern.compile(options.indentPattern + "$", Pattern.MULTILINE);
+        Matcher emptyCommentMatcher = emptyCommentPattern.matcher(paragraph);
+        Integer paragraphLength = paragraph.length();
+        Integer location = 0;
 
-        for (int i = 0; i < size; i++) {
-            String paragraph = wrappedParagraphs.get(i);
+        while (emptyCommentMatcher.find()) {
+            String match = emptyCommentMatcher.group();
+            String otherText = paragraph.substring(location, emptyCommentMatcher.start());
+            ArrayList<String> wrappedLines = breakToLinesOfChosenWidth(otherText);
 
-            // If this is a multi-paragraph list and we aren't at the end,
-            // add a new line.
-            if (size > 0 && i < size - 1) {
-                paragraph += options.lineSeparator;
+            if (paragraph.startsWith(match)) {
+                resultBuilder.append(match);
             }
 
-            result.append(paragraph);
+            for (String wrappedLine : wrappedLines) {
+                wrappedLine += options.lineSeparator;
+                resultBuilder.append(wrappedLine);
+            }
+
+            if (paragraph.endsWith(match)) {
+                resultBuilder.append(match);
+            }
+
+            location = emptyCommentMatcher.end();
         }
 
-        return result.toString();
+        // There were either empty comment lines, or we worked through them all.
+        // TODO: Pull some of this code into a method that the while loop also calls.
+        if (location < paragraphLength) {
+            String otherText = paragraph.substring(location, paragraphLength);
+            ArrayList<String> wrappedLines = breakToLinesOfChosenWidth(otherText);
+            for (String wrappedLine : wrappedLines) {
+                wrappedLine += options.lineSeparator;
+                resultBuilder.append(wrappedLine);
+            }
+        }
+
+        String result = resultBuilder.toString();
+
+        // The calling function will append new-lines to the very last line.
+        if (result.endsWith(options.lineSeparator)) {
+            result = result.substring(0, result.length() - 1);
+        }
+
+        return result;
     }
 
      /**
-     * Wrap code, and comments in a smart way
-     *
-     * Reformat the single paragraph in 'text' so it fits in lines of
-     * no more than 'width' columns, and return a list of wrapped
-     * lines.
+     * Reformat the single paragraph in `text` to lines of the chosen width,
+     * and return an array of these lines.
      *
      * @param text single paragraph of text
-     * @return lines filled with current width
+     * @return array of lines
      */
-    public ArrayList<String> wrap(String text) {
-        text = dewrap(text);
-        LineData firstLineData = splitIndent(text);
+    public ArrayList<String> breakToLinesOfChosenWidth(String text) {
+        LineData firstLineData = splitOnIndent(text);
         Integer width = options.width - firstLineData.indent.length();
-        String[] lines = WordUtils.wrap(text, width, options.lineSeparator, false)
+        String unwrappedText = unwrap(text);
+        String[] lines = WordUtils.wrap(unwrappedText, width, options.lineSeparator, false)
             .split(options.lineSeparator);
         ArrayList<String> result = new ArrayList<String>();
+        int length = lines.length;
+        Boolean firstLineIsCommentOpener = firstLineData.indent.startsWith("/*");
 
-        // If the first line is a multi-line comment opener, subsequent lines
-        // should use a star (*) as the indent. The final indent should use a
-        // star and forward-slash (*/).
-        boolean isMultiLineOpener = firstLineData.indent.contains("/*");
-        String indent =  isMultiLineOpener ? "* " : firstLineData.indent;
-
-        for (int i = 0; i < lines.length; i++) {
+        for (int i = 0; i < length; i++) {
             String line = lines[i];
-            String lineIndent = indent;
+            String lineIndent = firstLineData.indent;
+            LineData lineData = splitOnIndent(line);
+            line = lineData.rest;
 
-            if (i == 0) {
-                LineData lineData = splitIndent(line);
-                lineIndent = firstLineData.indent;
-                line = lineData.rest;
+            if (i > 0) {
+                // This is a hack. We don't know how much whitespace to use!
+                lineIndent = firstLineIsCommentOpener ? " * " : lineIndent;
             }
 
-            // On the final line of a multi-line comment opened with /** or
-            // /*, add a newline and */ to close the comment.
-            if (i == lines.length - 1 && isMultiLineOpener) {
-                line = line + options.lineSeparator + "*/";
-            }
-
-            // Use indent from the first line on it and all subsequent lines.
             result.add(lineIndent + line);
         }
 
@@ -177,29 +197,30 @@ public class CodeWrapper {
     /**
      * Convert hard wrapped paragraph to one line.
      *
-     * The indentation and comments of the first line are preserved,
-     * subsequent lines indent and comments characters are striped.
+     * The indentation and comments of the first line are preserved;
+     * subsequent lines indent and comment characters are striped.
      *
      * @param text one paragraph of text, possibly hard-wrapped
      * @return one line of text
      */
-    public String dewrap(String text) {
+    public String unwrap(String text) {
         if (text.isEmpty()) {
             return text;
         }
 
         String[] lines = text.split("[\\r\\n]+");
+        int length = lines.length;
         StringBuilder result = new StringBuilder();
 
         // Add first line as is, keeping indent
         result.append(lines[0]);
 
-        for (int i = 0; i < lines.length; i++) {
+        for (int i = 0; i < length; i++) {
             if (i == 0) {
                 continue;
             }
 
-            String unindentedLine = ' ' + splitIndent(lines[i]).rest;
+            String unindentedLine = ' ' + splitOnIndent(lines[i]).rest;
             // Add rest of lines removing indent
             result.append(unindentedLine);
         }
@@ -208,7 +229,7 @@ public class CodeWrapper {
     }
 
     /**
-     * Split text on indent, including comments characters
+     * Split text on indent, including comment characters
      *
      * Example (parsed from left margin):
      *      // Comment -> ' // ', 'Comment'
@@ -216,9 +237,8 @@ public class CodeWrapper {
      * @param text text to remove indents from
      * @return indent string, rest
      */
-    public LineData splitIndent(String text) {
-        Pattern pattern = Pattern.compile(options.indentPattern);
-        Matcher matcher = pattern.matcher(text);
+    public LineData splitOnIndent(String text) {
+        Matcher matcher = options.indentPattern.matcher(text);
         LineData lineData = new LineData("", text);
 
         // Only break on the first indent-worthy sequence found, to avoid any
@@ -226,6 +246,8 @@ public class CodeWrapper {
         if (matcher.find()) {
             lineData.indent = matcher.group();
             lineData.rest = text.substring(matcher.end(), text.length());
+            // We might get "/*\n", so strip the newline if so.
+            lineData.indent = lineData.indent.replaceAll("[\\r\\n]+", "");
         }
 
         return lineData;

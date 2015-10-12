@@ -47,7 +47,7 @@ public class WrapAction extends EditorAction {
 
                     final String text = selectionModel.getSelectedText();
                     CodeWrapper wrapper = new CodeWrapper(settings.RIGHT_MARGIN);
-                    String wrappedText = wrapper.fillParagraphs(text);
+                    String wrappedText = wrapper.wrap(text);
 
                     document.replaceString(selectionModel.getSelectionStart(),
                         selectionModel.getSelectionEnd(), wrappedText);
