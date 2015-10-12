@@ -227,7 +227,7 @@ public class CodeWrapper {
             }
             // Add first line as is, keeping indent.
             else {
-                result.append(lines[0]);
+                result.append(lines[0].trim());
                 start = 1;
             }
         }
@@ -263,7 +263,7 @@ public class CodeWrapper {
         // weirdness with comments-embedded-in-comments.
         if (matcher.find()) {
             lineData.indent = matcher.group();
-            lineData.rest = text.substring(matcher.end(), text.length());
+            lineData.rest = text.substring(matcher.end(), text.length()).trim();
             // We might get "/*\n", so strip the newline if so.
             lineData.indent = lineData.indent.replaceAll("[\\r\\n]+", "");
         }

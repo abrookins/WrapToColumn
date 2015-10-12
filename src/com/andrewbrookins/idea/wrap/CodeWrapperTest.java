@@ -135,6 +135,15 @@ public class CodeWrapperTest {
         assertEquals(expected, text);
     }
 
+    @Test
+    public void testIgnoresTrailingSpaces() throws Exception {
+        String text = wrapper.wrap("The quick brown fox \n" +
+                "jumps over the lazy \n" +
+                "dog");
+        String expected = "The quick brown fox jumps over the lazy dog";
+        assertEquals(expected, text);
+    }
+
     // TODO: The real problem with Chinese is font character width.
     @Test
     public void testSupportsChinese() throws Exception {
