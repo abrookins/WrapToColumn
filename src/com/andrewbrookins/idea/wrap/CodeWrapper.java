@@ -17,7 +17,7 @@ import org.apache.commons.lang.WordUtils;
  */
 public class CodeWrapper {
     public static class Options {
-        String commentRegex = "(/\\*+|\\*/|\\*|#+|//+|;+)?";
+        String commentRegex = "(/\\*+|\\*/|\\*|\\.|#+|//+|;+)?";
 
         String newlineRegex = "(\\n|\\r\\n)";
 
@@ -120,6 +120,12 @@ public class CodeWrapper {
 
         while (emptyCommentMatcher.find()) {
             String match = emptyCommentMatcher.group();
+
+            // No need to preserve a single empty new-line
+            if (match.isEmpty()) {
+                continue;
+            }
+
             String otherText = paragraph.substring(location, emptyCommentMatcher.start());
             ArrayList<String> wrappedLines = breakToLinesOfChosenWidth(otherText);
 
@@ -171,7 +177,7 @@ public class CodeWrapper {
         LineData firstLineData = splitOnIndent(text);
         Integer width = options.width - firstLineData.indent.length();
         String unwrappedText = unwrap(text);
-        String[] lines = WordUtils.wrap(unwrappedText, width, options.lineSeparator, false)
+        String[] lines = WordUtils.wrap(unwrappedText, width, options.lineSeparator, true)
             .split(options.lineSeparator);
         ArrayList<String> result = new ArrayList<String>();
         int length = lines.length;
@@ -211,18 +217,30 @@ public class CodeWrapper {
         String[] lines = text.split("[\\r\\n]+");
         int length = lines.length;
         StringBuilder result = new StringBuilder();
+        boolean firstLineWasCarriageReturn = false;
+        int start = 0;
 
-        // Add first line as is, keeping indent
-        result.append(lines[0]);
-
-        for (int i = 0; i < length; i++) {
-            if (i == 0) {
-                continue;
+        if (length > 0) {
+            // Ignore a line that is just a carriage return.
+            if (lines[0].isEmpty()) {
+                firstLineWasCarriageReturn = true;
             }
+            // Add first line as is, keeping indent.
+            else {
+                result.append(lines[0]);
+                start = 1;
+            }
+        }
 
-            String unindentedLine = ' ' + splitOnIndent(lines[i]).rest;
-            // Add rest of lines removing indent
-            result.append(unindentedLine);
+        for (int i = start; i < length; i++) {
+            String unindentedLine = splitOnIndent(lines[i]).rest;
+            // If we ignored the first line, then we don't need to add a space to the item.
+            if (firstLineWasCarriageReturn) {
+                result.append(unindentedLine);
+            }
+            else {
+                result.append(" ").append(unindentedLine);
+            }
         }
 
         return result.toString();

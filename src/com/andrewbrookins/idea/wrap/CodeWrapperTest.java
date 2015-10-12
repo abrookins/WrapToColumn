@@ -18,33 +18,36 @@ public class CodeWrapperTest {
         String original = "// This is my text.\n// This is my text.\n";
         String text = wrapper.wrap(original);
         assertEquals("// This is my text. This is my text.\n", text);
+
     }
 
     @Test
-    public void testFillParagraphsOneLongLine() throws Exception {
+    public void testWrapOneLongLine() throws Exception {
         String text = wrapper.wrap("// This is my very long line of text. " +
             "This is my very long line of text. This is my very long line of text.\n");
-        assertEquals("// This is my very long line of text. This is my very long line of text. This\n" +
-            "// is my very long line of text.\n", text);
+        String expected = "// This is my very long line of text. This is my very long line of text. This\n" +
+            "// is my very long line of text.\n";
+        assertEquals(expected, text);
     }
 
     @Test
-    public void testFillParagraphsRetainsSeparateParagraphs() throws Exception {
+    public void testWrapRetainsSeparateParagraphs() throws Exception {
         String text = wrapper.wrap("// This is my very long line of text. " +
             "This is my very long line of text. This is my very long line of text.\n\n" +
             "// This is a second paragraph.\n");
-        assertEquals("// This is my very long line of text. This is my very long line of text. This\n" +
-            "// is my very long line of text.\n\n// This is a second paragraph.\n", text);
+        String expected = "// This is my very long line of text. This is my very long line of text. This\n" +
+            "// is my very long line of text.\n\n// This is a second paragraph.\n";
+        assertEquals(expected, text);
     }
 
     @Test
-    public void testFillParagraphsDoesNotCombineTwoShortLines() throws Exception {
+    public void testWrapDoesNotCombineTwoShortLines() throws Exception {
         String text = wrapper.wrap("// This is my text.\n// This is my text.");
         assertEquals("// This is my text. This is my text.", text);
     }
 
     @Test
-    public void testFillParagraphsFillsMultiLineOpener() throws Exception {
+    public void testWrapFillsMultiLineOpener() throws Exception {
         String text = wrapper.wrap("/** This is my text This is my long multi-" +
             "line comment opener text. More text please. This is yet another bunch " +
             "of text in my test comment, so I will get multiple lines in the comment.");
@@ -54,7 +57,7 @@ public class CodeWrapperTest {
     }
 
     @Test
-    public void testFillParagraphsPreservesEmptyCommentLines() throws Exception {
+    public void testWrapPreservesEmptyCommentLines() throws Exception {
         String originalText = "/*\n" +
                 " * This is my text. This is my long multi-line comment opener text. More " +
                 "text please. This is yet another bunch of text in my test comment, so I " +
@@ -72,21 +75,73 @@ public class CodeWrapperTest {
                 "*/", wrappedText);
     }
 
+    @Test
+    public void testWrapMultipleCommentParagraphs() throws Exception {
+        String originalText = "/*\n" +
+                " * This is my text. This is my long multi-line comment opener text. More " +
+                "text please. This is yet another bunch of text in my test comment, so I " +
+                "will get multiple lines in the comment.\n" +
+                " *\n" +
+                " * This is another line of text.\n" +
+                " * \n" +
+                " * And yet another long line of text. Text going on and an endlessly, much longer than it really should.\n" +
+                "*/";
+        String wrappedText = wrapper.wrap(originalText);
+        assertEquals("/*\n" +
+                " * This is my text. This is my long multi-line comment opener text. More text\n" +
+                " * please. This is yet another bunch of text in my test comment, so I will get\n" +
+                " * multiple lines in the comment.\n" +
+                " *\n" +
+                " * This is another line of text.\n" +
+                " * \n" +
+                " * And yet another long line of text. Text going on and an endlessly, much\n" +
+                " * longer than it really should.\n" +
+                "*/", wrappedText);
+    }
+
 
     @Test
-    public void testFillParagraphsRetainsSpaceIndent() throws Exception {
+    public void testWrapRetainsSpaceIndent() throws Exception {
         String text = wrapper.wrap("    This is my long indented " +
             "string. It's too long to fit on one line, uh oh! What will happen?");
-        assertEquals("    This is my long indented string. It's too long to fit " +
-            "on one line, uh oh!\n    What will happen?", text);
+        String expected = "    This is my long indented string. It's too long to fit " +
+            "on one line, uh oh!\n    What will happen?";
+        assertEquals(expected, text);
     }
 
     @Test
-    public void testFillParagraphsHandlesLinesWithinMultiLineComment() throws Exception {
+    public void testWrapHandlesLinesWithinMultiLineComment() throws Exception {
         String text = wrapper.wrap("* This is a long line in a multi-" +
             "line comment block. Note the star at the beginning.\n* This is " +
             "another line in a multi-line comment.");
-        assertEquals("* This is a long line in a multi-line comment block. Note the star at the\n" +
-            "* beginning. This is another line in a multi-line comment.", text);
+        String expected = "* This is a long line in a multi-line comment block. Note the star at the\n" +
+            "* beginning. This is another line in a multi-line comment.";
+        assertEquals(expected, text);
+    }
+
+    @Test
+    public void testWrapRemovesExtraBlankLine() throws Exception {
+        String text = wrapper.wrap("\nMy block of text. My block of text. My block of text. " +
+            "My block of text. My block of text. My block of text.");
+        String expected = "My block of text. My block of text. My block of text. My block of text. My block\n" +
+                "of text. My block of text.";
+        assertEquals(expected, text);
+    }
+
+    @Test
+    public void testWrapPreservesLeadingIndent() throws Exception {
+        String text = wrapper.wrap(". My long bullet line. My long bullet line. My long bullet line. My long bullet line.");
+        String expected = ". My long bullet line. My long bullet line. My long bullet line. My long\n. bullet line.";
+        assertEquals(expected, text);
+    }
+
+    // TODO: The real problem with Chinese is font character width.
+    @Test
+    public void testSupportsChinese() throws Exception {
+        String text = wrapper.wrap("這是中國文字，這應該是太長，無法在一行中，並會按需要得到包裹的長行。這是中國文字，這應該是太長，無法在一行中，並會按需要得到包裹的長行。" +
+                "這是中國文字，這應該是太長，無法在一行中，並會按需要得到包裹的長行。");
+        String expected = "這是中國文字，這應該是太長，無法在一行中，並會按需要得到包裹的長行。這是中國文字，這應該是太長，無法在一行中，並會按需要得到包裹的長行。這是中國文字，這應該是太\n" +
+                "長，無法在一行中，並會按需要得到包裹的長行。";
+        assertEquals(expected, text);
     }
 }
