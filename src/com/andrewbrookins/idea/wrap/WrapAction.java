@@ -37,16 +37,17 @@ public class WrapAction extends EditorAction {
             ApplicationManager.getApplication().runWriteAction(new Runnable() {
                 public void run() {
                     final Project project = LangDataKeys.PROJECT.getData(dataContext);
-                    final CodeStyleSettings settings = CodeStyleSettingsManager.getSettings(project);
                     final Document document = editor.getDocument();
                     final SelectionModel selectionModel = editor.getSelectionModel();
+                    final int codeStyleRightMargin = editor.getSettings().getRightMargin(project);
+
 
                     if (!selectionModel.hasSelection()) {
                         selectionModel.selectLineAtCaret();
                     }
 
                     final String text = selectionModel.getSelectedText();
-                    CodeWrapper wrapper = new CodeWrapper(settings.RIGHT_MARGIN);
+                    CodeWrapper wrapper = new CodeWrapper(codeStyleRightMargin);
                     String wrappedText = wrapper.wrap(text);
 
                     document.replaceString(selectionModel.getSelectionStart(),

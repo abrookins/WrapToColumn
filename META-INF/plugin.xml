@@ -1,19 +1,29 @@
 <idea-plugin version="2">
   <id>com.andrewbrookins.wrap_to_column</id>
   <name>Wrap to Column</name>
-  <version>0.1.4</version>
+  <version>1.0</version>
   <vendor email="a@andrewbrookins.com" url="http://andrewbrookins.com">Andrew Brookins</vendor>
 
   <description><![CDATA[
     <p>
+        <strong>Note:</strong> As of version 1.0, this plugin supports only IDEA
+        14.1.x-based products and later (e.g., PyCharm 4.1, WebStorm 10, Android
+        Studio 1.3).
+    </p>
+    <p>
         Wrap selected text to the specified column width. Similar to the Emacs
         command 'Fill Paragraph' and Vim's `gq` (format lines) command. A
-        replacement for the native Intellij Fill Paragraph command, which hasn't
-        ever worked correctly for me.
+        replacement for the native Intellij Fill Paragraph command, which
+        doesn't work quite how I need it to.
     </p>
       ]]></description>
 
   <change-notes><![CDATA[
+    <b>1.0</b>
+    <ul>
+    <li>Use the language-specific right margin setting if one is configured</li>
+    </ul>
+
     <b>0.1.4</b>
     <ul>
     <li>Strip trailing spaces before wrapping</li>
@@ -44,7 +54,7 @@
   </change-notes>
 
   <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Build+Number+Ranges for description -->
-  <idea-version since-build="107.105"/>
+  <idea-version since-build="141"/>
 
   <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
        on how to target different products -->
