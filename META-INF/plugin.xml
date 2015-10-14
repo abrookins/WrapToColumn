@@ -1,7 +1,7 @@
 <idea-plugin version="2">
   <id>com.andrewbrookins.wrap_to_column</id>
   <name>Wrap to Column</name>
-  <version>0.1.3</version>
+  <version>0.1.4</version>
   <vendor email="a@andrewbrookins.com" url="http://andrewbrookins.com">Andrew Brookins</vendor>
 
   <description><![CDATA[
@@ -14,6 +14,12 @@
       ]]></description>
 
   <change-notes><![CDATA[
+    <b>0.1.4</b>
+    <ul>
+    <li>Strip trailing spaces before wrapping</li>
+    <li>Preserve paragraphs within comments</li>
+    </ul>
+
     <b>0.1.3</b>
     <ul>
     <li>Stop adding an erroneous leading space if the first line of the selection is a newline/carriage return.<li>
