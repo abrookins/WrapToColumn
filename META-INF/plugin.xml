@@ -1,7 +1,7 @@
 <idea-plugin version="2">
   <id>com.andrewbrookins.wrap_to_column</id>
   <name>Wrap to Column</name>
-  <version>0.1.4</version>
+  <version>0.1.5</version>
   <vendor email="a@andrewbrookins.com" url="http://andrewbrookins.com">Andrew Brookins</vendor>
 
   <description><![CDATA[
@@ -14,6 +14,21 @@
       ]]></description>
 
   <change-notes><![CDATA[
+    <b>1.0.1</b>
+    <ul>
+    <li>Fix a bug in handling continuations of C-style multi-line comments</li>
+    </ul>
+
+    <b>1.0</b>
+    <ul>
+    <li>Use the language-specific right margin setting if one is configured</li>
+    </ul>
+
+    <b>0.1.5</b>
+    <ul>
+    <li>Fix a bug in handling continuations of C-style multi-line comments [1.0.1 bug fix for older versions of Intellij]</li>
+    </ul>
+
     <b>0.1.4</b>
     <ul>
     <li>Strip trailing spaces before wrapping</li>

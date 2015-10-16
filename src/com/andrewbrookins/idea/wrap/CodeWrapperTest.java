@@ -57,6 +57,16 @@ public class CodeWrapperTest {
     }
 
     @Test
+    public void testWrapFillsMultiLineOpenerBeginningSpace() throws Exception {
+        String text = wrapper.wrap("  /* This is my text This is my long multi-" +
+            "line comment opener text. More text please. This is yet another bunch " +
+            "of text in my test comment, so I will get multiple lines in the comment. */");
+        assertEquals("  /* This is my text This is my long multi-line comment opener text. More\n" +
+            "   * text please. This is yet another bunch of text in my test comment, so I\n" +
+            "   * will get multiple lines in the comment. */", text);
+    }
+
+    @Test
     public void testWrapPreservesEmptyCommentLines() throws Exception {
         String originalText = "/*\n" +
                 " * This is my text. This is my long multi-line comment opener text. More " +
