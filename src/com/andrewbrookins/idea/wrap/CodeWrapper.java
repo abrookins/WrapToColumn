@@ -181,7 +181,15 @@ public class CodeWrapper {
             .split(options.lineSeparator);
         ArrayList<String> result = new ArrayList<String>();
         int length = lines.length;
-        Boolean firstLineIsCommentOpener = firstLineData.indent.startsWith("/*");
+        Boolean firstLineIsCommentOpener = firstLineData.indent.matches("\\s*(/\\*+).*");
+        String whitespaceBeforeOpener = "";
+
+        if (firstLineIsCommentOpener) {
+            Matcher whitespaceMatcher = Pattern.compile("^\\s*").matcher(firstLineData.indent);
+            if (whitespaceMatcher.find()) {
+                whitespaceBeforeOpener = whitespaceMatcher.group();
+            }
+        }
 
         for (int i = 0; i < length; i++) {
             String line = lines[i];
@@ -191,7 +199,7 @@ public class CodeWrapper {
 
             if (i > 0) {
                 // This is a hack. We don't know how much whitespace to use!
-                lineIndent = firstLineIsCommentOpener ? " * " : lineIndent;
+                lineIndent = firstLineIsCommentOpener ? whitespaceBeforeOpener + " * " : lineIndent;
             }
 
             result.add(lineIndent + line);
