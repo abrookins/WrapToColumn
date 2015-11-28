@@ -22,11 +22,45 @@ public class CodeWrapperTest {
     }
 
     @Test
+    public void testWrapsToColumnWidthComment() throws Exception {
+        String text = wrapper.wrap("// a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a " +
+            "a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a\n");
+
+        String expected = "// a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a\n" +
+            "// a a a a a a a a a a a a a a a a a a a a a\n";
+        assertEquals(expected, text);
+    }
+
+    @Test
+    public void testWrapsToColumnWidthCStyleOpeningComment() throws Exception {
+        String text = wrapper.wrap("/** a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a " +
+            "a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a\n" +
+            "*/");
+
+        String expected = "/** a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a\n" +
+            " * a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a\n" +
+            " * a a a a a a\n" +
+            "*/";
+        assertEquals(expected, text);
+    }
+
+    @Test
+    public void testWrapsToColumnWidthNoComment() throws Exception {
+        String text = wrapper.wrap("a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a " +
+            "a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a\n");
+
+        String expected = "a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a\n" +
+            "a a a a a a a a a a a a a a a a a a a a\n";
+        assertEquals(expected, text);
+    }
+
+    @Test
     public void testWrapOneLongLine() throws Exception {
         String text = wrapper.wrap("// This is my very long line of text. " +
             "This is my very long line of text. This is my very long line of text.\n");
-        String expected = "// This is my very long line of text. This is my very long line of text. This\n" +
-            "// is my very long line of text.\n";
+
+        String expected = "// This is my very long line of text. This is my very long line of text. This is\n" +
+            "// my very long line of text.\n";
         assertEquals(expected, text);
     }
 
@@ -35,8 +69,8 @@ public class CodeWrapperTest {
         String text = wrapper.wrap("// This is my very long line of text. " +
             "This is my very long line of text. This is my very long line of text.\n\n" +
             "// This is a second paragraph.\n");
-        String expected = "// This is my very long line of text. This is my very long line of text. This\n" +
-            "// is my very long line of text.\n\n// This is a second paragraph.\n";
+        String expected = "// This is my very long line of text. This is my very long line of text. This is\n" +
+            "// my very long line of text.\n\n// This is a second paragraph.\n";
         assertEquals(expected, text);
     }
 
@@ -51,9 +85,9 @@ public class CodeWrapperTest {
         String text = wrapper.wrap("/** This is my text This is my long multi-" +
             "line comment opener text. More text please. This is yet another bunch " +
             "of text in my test comment, so I will get multiple lines in the comment.");
-        assertEquals("/** This is my text This is my long multi-line comment opener text. More\n" +
-            " * text please. This is yet another bunch of text in my test comment, so I will\n" +
-            " * get multiple lines in the comment.", text);
+        assertEquals("/** This is my text This is my long multi-line comment opener text. More text\n" +
+            " * please. This is yet another bunch of text in my test comment, so I will get\n" +
+            " * multiple lines in the comment.", text);
     }
 
     @Test
@@ -61,9 +95,9 @@ public class CodeWrapperTest {
         String text = wrapper.wrap("  /* This is my text This is my long multi-" +
             "line comment opener text. More text please. This is yet another bunch " +
             "of text in my test comment, so I will get multiple lines in the comment. */");
-        assertEquals("  /* This is my text This is my long multi-line comment opener text. More\n" +
-            "   * text please. This is yet another bunch of text in my test comment, so I\n" +
-            "   * will get multiple lines in the comment. */", text);
+        assertEquals("  /* This is my text This is my long multi-line comment opener text. More text\n" +
+            "   * please. This is yet another bunch of text in my test comment, so I will get\n" +
+            "   * multiple lines in the comment. */", text);
     }
 
     @Test
@@ -141,7 +175,7 @@ public class CodeWrapperTest {
     @Test
     public void testWrapPreservesLeadingIndent() throws Exception {
         String text = wrapper.wrap(". My long bullet line. My long bullet line. My long bullet line. My long bullet line.");
-        String expected = ". My long bullet line. My long bullet line. My long bullet line. My long\n. bullet line.";
+        String expected = ". My long bullet line. My long bullet line. My long bullet line. My long bullet\n. line.";
         assertEquals(expected, text);
     }
 
