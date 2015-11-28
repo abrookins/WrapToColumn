@@ -188,6 +188,18 @@ public class CodeWrapperTest {
         assertEquals(expected, text);
     }
 
+    @Test
+    public void preservesCommentSymbolsWithinText() throws Exception {
+        String text = wrapper.wrap("/**\n" +
+            " * Let's provide a javadoc comment that has a link to some method, e.g. {@link #m()}.\n" +
+            " */");
+        String expected = "/**\n" +
+            " * Let's provide a javadoc comment that has a link to some method, e.g. {@link\n" +
+            " * #m()}.\n" +
+            " */";
+        assertEquals(expected, text);
+    }
+
     // TODO: The real problem with Chinese is font character width.
     @Test
     public void testSupportsChinese() throws Exception {
