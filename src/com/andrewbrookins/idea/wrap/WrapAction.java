@@ -47,6 +47,10 @@ public class WrapAction extends EditorAction {
                     }
 
                     final String text = selectionModel.getSelectedText();
+                    if (text == null) {
+                        return;
+                    }
+
                     CodeWrapper wrapper = new CodeWrapper(codeStyleRightMargin);
                     String wrappedText = wrapper.wrap(text);
 

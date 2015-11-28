@@ -200,6 +200,13 @@ public class CodeWrapperTest {
         assertEquals(expected, text);
     }
 
+    @Test
+    public void wrapsNullStrings() throws Exception {
+        String text = wrapper.wrap(null);
+        String expected = "";
+        assertEquals(expected, text);
+    }
+
     // TODO: The real problem with Chinese is font character width.
     @Test
     public void testSupportsChinese() throws Exception {

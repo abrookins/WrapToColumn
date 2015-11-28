@@ -76,6 +76,10 @@ public class CodeWrapper {
      * @return text wrapped to `width`.
      */
     public String wrap(String text) {
+        if (text == null) {
+            return "";
+        }
+
         StringBuilder result = new StringBuilder();
         Matcher paragraphMatcher = options.paragraphSeparatorPattern.matcher(text);
         Integer textLength = text.length();
