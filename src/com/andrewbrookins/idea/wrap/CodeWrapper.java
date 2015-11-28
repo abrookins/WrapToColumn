@@ -51,7 +51,7 @@ public class CodeWrapper {
         }
     }
 
-    private Options options;
+    public Options options;
 
     public CodeWrapper(Options options) {
         this.options = options;
@@ -166,22 +166,27 @@ public class CodeWrapper {
         return result;
     }
 
-     /**
+    /**
      * Reformat the single paragraph in `text` to lines of the chosen width,
      * and return an array of these lines.
+     *
+     * Note: C-style multi-line comments are always reflowed to the chosen column width minus
+     * the length of the opening line comment/indent (which is, e.g. 4 for "/** Opening line...").
+     * This means that continuation lines (e.g. " * I'm a continuation line in") may be slightly
+     * shorter than expected.
      *
      * @param text single paragraph of text
      * @return array of lines
      */
     public ArrayList<String> breakToLinesOfChosenWidth(String text) {
         LineData firstLineData = splitOnIndent(text);
+        String multiLineContinuation = " * ";
+        Boolean firstLineIsCommentOpener = firstLineData.indent.matches("\\s*(/\\*+).*");
         Integer width = options.width - firstLineData.indent.length();
         String unwrappedText = unwrap(text);
-        String[] lines = WordUtils.wrap(unwrappedText, width, options.lineSeparator, true)
-            .split(options.lineSeparator);
+        String[] lines = WordUtils.wrap(unwrappedText, width, options.lineSeparator, true).split(options.lineSeparator);
         ArrayList<String> result = new ArrayList<String>();
         int length = lines.length;
-        Boolean firstLineIsCommentOpener = firstLineData.indent.matches("\\s*(/\\*+).*");
         String whitespaceBeforeOpener = "";
 
         if (firstLineIsCommentOpener) {
@@ -194,12 +199,10 @@ public class CodeWrapper {
         for (int i = 0; i < length; i++) {
             String line = lines[i];
             String lineIndent = firstLineData.indent;
-            LineData lineData = splitOnIndent(line);
-            line = lineData.rest;
 
             if (i > 0) {
                 // This is a hack. We don't know how much whitespace to use!
-                lineIndent = firstLineIsCommentOpener ? whitespaceBeforeOpener + " * " : lineIndent;
+                lineIndent = firstLineIsCommentOpener ? whitespaceBeforeOpener + multiLineContinuation : lineIndent;
             }
 
             result.add(lineIndent + line);
@@ -209,10 +212,9 @@ public class CodeWrapper {
     }
 
     /**
-     * Convert hard wrapped paragraph to one line.
+     * Convert a hard wrapped paragraph to one line.
      *
-     * The indentation and comments of the first line are preserved;
-     * subsequent lines indent and comment characters are striped.
+     * Indent and comment characters are striped.
      *
      * @param text one paragraph of text, possibly hard-wrapped
      * @return one line of text
@@ -223,32 +225,28 @@ public class CodeWrapper {
         }
 
         String[] lines = text.split("[\\r\\n]+");
-        int length = lines.length;
         StringBuilder result = new StringBuilder();
-        boolean firstLineWasCarriageReturn = false;
-        int start = 0;
+        boolean lastLineWasCarriageReturn = false;
+        int length = lines.length;
 
-        if (length > 0) {
-            // Ignore a line that is just a carriage return.
-            if (lines[0].isEmpty()) {
-                firstLineWasCarriageReturn = true;
-            }
-            // Add first line as is, keeping indent.
-            else {
-                result.append(lines[0].trim());
-                start = 1;
-            }
-        }
+        for (int i = 0; i < length; i++) {
+            String line = lines[i];
+            String unindentedLine = splitOnIndent(line).rest.trim();
 
-        for (int i = start; i < length; i++) {
-            String unindentedLine = splitOnIndent(lines[i]).rest;
-            // If we ignored the first line, then we don't need to add a space to the item.
-            if (firstLineWasCarriageReturn) {
+            if (line.isEmpty()) {
+                // Ignore a line that was just a carriage return/new line.
+                lastLineWasCarriageReturn = true;
+                continue;
+            }
+
+            // Only add a space if we're joining two sentences that contained words.
+            if (lastLineWasCarriageReturn || length == 1 || i == 0) {
                 result.append(unindentedLine);
-            }
-            else {
+            } else {
                 result.append(" ").append(unindentedLine);
             }
+
+            lastLineWasCarriageReturn = false;
         }
 
         return result.toString();
