@@ -44,7 +44,17 @@ public class WrapSettingsPanel {
     }
 
     public void reset() {
-        columnWidthOverrideField.setText(String.valueOf(settingsProvider.getState().columnWidthOverride));
+        Integer columnOverride = settingsProvider.getState().columnWidthOverride;
+        String overrideText;
+
+        if (columnOverride == null) {
+            overrideText = "";
+        }
+        else {
+            overrideText = String.valueOf(columnOverride);
+        }
+
+        columnWidthOverrideField.setText(overrideText);
     }
 }
 
