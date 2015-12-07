@@ -1,7 +1,7 @@
 <idea-plugin version="2">
   <id>com.andrewbrookins.wrap_to_column</id>
   <name>Wrap to Column</name>
-  <version>1.0.1</version>
+  <version>1.1.0</version>
   <vendor email="a@andrewbrookins.com" url="http://andrewbrookins.com">Andrew Brookins</vendor>
 
   <description><![CDATA[
@@ -19,6 +19,11 @@
       ]]></description>
 
   <change-notes><![CDATA[
+    <b>1.1.0</b>
+    <ul>
+    <li>New feature: Set a column width override in Settings: Tools -> Wrap to Column. Overrides style and global column width settings.</li>
+    </ul>
+
     <b>1.0.1</b>
     <ul>
     <li>Fix a bug in handling continuations of C-style multi-line comments</li>
