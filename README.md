@@ -6,6 +6,10 @@ to the column width specified in the editor's "Right Margin (columns)" setting.
 As of version 1.0, the plugin respects per-language right column settings (assuming
 your version of Intellij-based editor supports that feature).
 
+As of version 1.1.0, the plugin allows you to specify a column width that
+overrides the current language setting and global column setting. See the
+"Settings" section for more details.
+
 This is a replacement for the Fill Paragraph command, which doesn't work for me.
 
 
@@ -24,6 +28,16 @@ from disk, then choose the WrapToColumn.zip file located in the source repo.
 
 The default keyboard shortcut is Command+Control+Shift+W. Feel free to change
 that beast in your keymap.
+
+
+## Settings
+
+You may provide an column width that will override both the language-specific
+column setting and global column setting.
+
+This setting exists in Settings (Preferences on OS X) -> Tools -> Wrap to Column.
+
+The setting is named "Column width override" and accepts an integer value.
 
 
 ## Menu item
