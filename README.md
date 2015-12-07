@@ -47,8 +47,9 @@ A menu item should exist for the plugin in the Edit drop-down menu: Edit -> Wrap
 
 ## Roadmap
 
-Next on deck: Bug fixes and a new command (or maybe a dialog for this one) that takes
-arbitrary column width. (I often like comments to use a different width than the code).
+* Next on deck: Issue #11, doesn't take tab width into account
+* How can the plugin support Chinese better? The wrapping algorithm reflows by assuming that one character is equal in width to one column, which does not take into account the display width of code points in e.g. Chinese. (or tab-width, for that matter -- see issue #11)
+
 
 ## License
 
