@@ -1,5 +1,6 @@
 package com.andrewbrookins.idea.wrap;
 
+import com.andrewbrookins.idea.wrap.config.WrapSettingsProvider;
 import com.intellij.openapi.actionSystem.ActionPlaces;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DataContext;
@@ -37,8 +38,22 @@ public class WrapAction extends EditorAction {
                     final Project project = LangDataKeys.PROJECT.getData(dataContext);
                     final Document document = editor.getDocument();
                     final SelectionModel selectionModel = editor.getSelectionModel();
-                    final int codeStyleRightMargin = editor.getSettings().getRightMargin(project);
+                    Integer columnWidthOverride;
+                    final int columnWidth;
 
+                    try {
+                        columnWidthOverride = WrapSettingsProvider.getInstance().getState().columnWidthOverride;
+                    }
+                    catch (NullPointerException e) {
+                        columnWidthOverride = null;
+                    }
+
+                    if (columnWidthOverride != null) {
+                        columnWidth = columnWidthOverride;
+                    }
+                    else {
+                        columnWidth = editor.getSettings().getRightMargin(project);
+                    }
 
                     if (!selectionModel.hasSelection()) {
                         selectionModel.selectLineAtCaret();
@@ -49,7 +64,7 @@ public class WrapAction extends EditorAction {
                         return;
                     }
 
-                    CodeWrapper wrapper = new CodeWrapper(codeStyleRightMargin);
+                    CodeWrapper wrapper = new CodeWrapper(columnWidth);
                     String wrappedText = wrapper.wrap(text);
 
                     document.replaceString(selectionModel.getSelectionStart(),

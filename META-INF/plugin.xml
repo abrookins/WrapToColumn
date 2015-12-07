@@ -66,12 +66,25 @@
   <depends>com.intellij.modules.lang</depends>
 
   <application-components>
-    <!-- Add your application components here -->
+      <component>
+        <implementation-class>com.andrewbrookins.idea.wrap.config.WrapSettingsProvider
+        </implementation-class>
+      </component>
   </application-components>
 
   <project-components>
     <!-- Add your project components here -->
   </project-components>
+
+
+  <extensions defaultExtensionNs="com.intellij">
+    <applicationConfigurable
+            groupId="tools"
+            displayName="Wrap to Column"
+            id="wrap.settings"
+            instance="com.andrewbrookins.idea.wrap.config.WrapSettingsConfigurable"/>
+  </extensions>
+
 
   <actions>
     <!-- Add your actions here -->
@@ -81,8 +94,4 @@
           <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl meta W"/>
       </action>
   </actions>
-
-  <extensions defaultExtensionNs="com.intellij">
-    <!-- Add your extensions here -->
-  </extensions>
 </idea-plugin>
