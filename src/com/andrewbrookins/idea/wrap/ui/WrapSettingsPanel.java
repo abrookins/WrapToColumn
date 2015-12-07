@@ -26,7 +26,8 @@ public class WrapSettingsPanel {
     }
 
     public boolean isModified() {
-        return !Comparing.equal(columnWidthOverrideField.getText(), settingsProvider.getState().columnWidthOverride);
+        Integer columnOverride = settingsProvider.getState().columnWidthOverride;
+        return !Comparing.equal(columnWidthOverrideField.getText(), String.valueOf(columnOverride));
     }
 
     public void apply() {
@@ -45,14 +46,7 @@ public class WrapSettingsPanel {
 
     public void reset() {
         Integer columnOverride = settingsProvider.getState().columnWidthOverride;
-        String overrideText;
-
-        if (columnOverride == null) {
-            overrideText = "";
-        }
-        else {
-            overrideText = String.valueOf(columnOverride);
-        }
+        String overrideText = columnOverride == null ? "" : String.valueOf(columnOverride);
 
         columnWidthOverrideField.setText(overrideText);
     }
