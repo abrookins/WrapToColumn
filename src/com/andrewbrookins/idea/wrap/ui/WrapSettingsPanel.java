@@ -9,6 +9,9 @@ import com.andrewbrookins.idea.wrap.config.WrapSettingsProvider;
 
 /**
  * Plugin settings UI.
+ *
+ * NOTE: I could not figure out how to get WrapSettingsPanel.form to use this class
+ * properly when WrapSettingsPanel is written in Kotlin!
  */
 public class WrapSettingsPanel {
 
@@ -16,6 +19,7 @@ public class WrapSettingsPanel {
     private JTextField columnWidthOverrideField;
     private JTextPane textPane;
     private JPanel panel;
+    private JLabel columnWidthOverrideLabel;
 
     public WrapSettingsPanel() {
         settingsProvider = WrapSettingsProvider.getInstance();
@@ -26,7 +30,7 @@ public class WrapSettingsPanel {
     }
 
     public boolean isModified() {
-        Integer columnOverride = settingsProvider.getState().columnWidthOverride;
+        Integer columnOverride = settingsProvider.getState().getColumnWidthOverride();
         return !Comparing.equal(columnWidthOverrideField.getText(), String.valueOf(columnOverride));
     }
 
@@ -36,16 +40,15 @@ public class WrapSettingsPanel {
 
         try {
             columnWidth = Integer.parseInt(columnWidthOverrideField.getText());
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             columnWidth = null;
         }
 
-        settingsProvider.getState().columnWidthOverride = columnWidth;
+        settingsProvider.getState().setColumnWidthOverride(columnWidth);
     }
 
     public void reset() {
-        Integer columnOverride = settingsProvider.getState().columnWidthOverride;
+        Integer columnOverride = settingsProvider.getState().getColumnWidthOverride();
         String overrideText = columnOverride == null ? "" : String.valueOf(columnOverride);
 
         columnWidthOverrideField.setText(overrideText);

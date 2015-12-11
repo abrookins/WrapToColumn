@@ -1,0 +1,10 @@
+Wrap to Column
+Copyright 2013-2015 Andrew Brookins
+
+This product includes code from the Apache Software Foundation. In particular,
+`CodeWrapper._wrap` was derived from the Apache Commons Lang's WordUtils.wrap
+method, released under the Apache License 2.0, included here as LICENSE.txt.
+
+The CodeWrapper class was inspired by code copyright 2006 Nir Soffer
+(https://pypi.python.org/pypi/codewrap/), released under the GPL v2, included
+here as the file COPYING.txt.
