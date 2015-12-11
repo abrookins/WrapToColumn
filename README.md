@@ -32,12 +32,24 @@ that beast in your keymap.
 
 ## Settings
 
-You may provide an column width that will override both the language-specific
-column setting and global column setting.
+### Column width
+
+By default, this plugin uses your configured global or language-specific right
+margin setting as the column width to wrap at. However, you may provide a column
+width that will override both of these settings.
 
 This setting exists in Settings (Preferences on OS X) -> Tools -> Wrap to Column.
 
 The setting is named "Column width override" and accepts an integer value.
+
+
+### Tab width
+
+Any lines that contain tabs (or are prefixed with tabs as an indent) will be
+reflowed as if the tabs were characters spaced at your configured tab width.
+
+This means that the text will look right to you if your tab width is 4, but not
+to your co-maintainer whose tab width is 8. This seems to be the best trade-off.
 
 
 ## Menu item
@@ -45,10 +57,23 @@ The setting is named "Column width override" and accepts an integer value.
 A menu item should exist for the plugin in the Edit drop-down menu: Edit -> Wrap to Column
 
 
-## Roadmap
+## A note about monospaced versus variable width fonts
 
-* Next on deck: Issue #11, doesn't take tab width into account
-* How can the plugin support Chinese better? The wrapping algorithm reflows by assuming that one character is equal in width to one column, which does not take into account the display width of code points in e.g. Chinese. (or tab-width, for that matter -- see issue #11)
+This plugin reflows selected text by assuming that each character takes one
+column's worth of space (except tabs, which are expanded to your tab width).
+
+This works fine with monospaced fonts. However, if you use a variable-width
+font, which seems to be common for some languages like Chinese (see issue #11),
+then the individual glyphs of the font take up more than one column.
+
+The plugin will still wrap your text to e.g. 80 characters wide, but the
+position won't match Intellij's right margin guide.
+
+Annnyway, I recommend that you use a monospaced font if you can.
+
+
+## Roadmap
+* Bug fixes 
 
 
 ## License
