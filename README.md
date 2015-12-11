@@ -78,4 +78,4 @@ Annnyway, I recommend that you use a monospaced font if you can.
 
 ## License
 
-This plugin is licensed under the GPLv2. See COPYING.
+This plugin is licensed under the GPLv2 and Apache License 2.0 (I hear they're incompatible, but IANAL). See COPYING.txt and LICENSE.txt.
