@@ -60,6 +60,7 @@ class WrapSettingsProvider : PersistentStateComponent<WrapSettingsProvider.State
          * Remember a column width override.
          */
         var columnWidthOverride: Int? = null
+        var useMinimumRaggednessAlgorithm: Boolean = false
     }
 
     companion object {

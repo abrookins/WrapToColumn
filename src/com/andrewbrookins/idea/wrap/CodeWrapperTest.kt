@@ -18,7 +18,7 @@ class CodeWrapperTests {
 
     @Test
     fun testWrapsToColumnWidthComment() {
-        val text = wrapper.wrap("// a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a " + "a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a\n")
+        val text = wrapper.wrap("// a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a\n")
 
         val expected = "// a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a\n// a a a a a a a a a a a a a a a a a a a a a\n"
         assertEquals(expected, text)
@@ -34,7 +34,7 @@ class CodeWrapperTests {
 
     @Test
     fun testWrapsToColumnWidthNoComment() {
-        val text = wrapper.wrap("a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a " + "a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a\n")
+        val text = wrapper.wrap("a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a\n")
 
         val expected = "a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a\na a a a a a a a a a a a a a a a a a a a\n"
         assertEquals(expected, text)
@@ -42,7 +42,7 @@ class CodeWrapperTests {
 
     @Test
     fun testWrapOneLongLine() {
-        val text = wrapper.wrap("// This is my very long line of text. " + "This is my very long line of text. This is my very long line of text.\n")
+        val text = wrapper.wrap("// This is my very long line of text. This is my very long line of text. This is my very long line of text.\n")
 
         val expected = "// This is my very long line of text. This is my very long line of text. This is\n// my very long line of text.\n"
         assertEquals(expected, text)
@@ -63,13 +63,13 @@ class CodeWrapperTests {
 
     @Test
     fun testWrapFillsMultiLineOpener() {
-        val text = wrapper.wrap("/** This is my text This is my long multi-" + "line comment opener text. More text please. This is yet another bunch " + "of text in my test comment, so I will get multiple lines in the comment.")
+        val text = wrapper.wrap("/** This is my text This is my long multi-line comment opener text. More text please. This is yet another bunch of text in my test comment, so I will get multiple lines in the comment.")
         assertEquals("/** This is my text This is my long multi-line comment opener text. More text\n * please. This is yet another bunch of text in my test comment, so I will get\n * multiple lines in the comment.", text)
     }
 
     @Test
     fun testWrapFillsMultiLineOpenerBeginningSpace() {
-        val text = wrapper.wrap("  /* This is my text This is my long multi-" + "line comment opener text. More text please. This is yet another bunch " + "of text in my test comment, so I will get multiple lines in the comment. */")
+        val text = wrapper.wrap("  /* This is my text This is my long multi-line comment opener text. More text please. This is yet another bunch of text in my test comment, so I will get multiple lines in the comment. */")
         assertEquals("  /* This is my text This is my long multi-line comment opener text. More text\n   * please. This is yet another bunch of text in my test comment, so I will get\n   * multiple lines in the comment. */", text)
     }
 
@@ -90,7 +90,7 @@ class CodeWrapperTests {
 
     @Test
     fun testWrapRetainsSpaceIndent() {
-        val text = wrapper.wrap("    This is my long indented " + "string. It's too long to fit on one line, uh oh! What will happen?")
+        val text = wrapper.wrap("    This is my long indented string. It's too long to fit on one line, uh oh! What will happen?")
         val expected = "    This is my long indented string. It's too long to fit on one line, uh oh!\n    What will happen?"
         assertEquals(expected, text)
     }
@@ -104,7 +104,7 @@ class CodeWrapperTests {
 
     @Test
     fun testWrapRemovesExtraBlankLine() {
-        val text = wrapper.wrap("\nMy block of text. My block of text. My block of text. " + "My block of text. My block of text. My block of text.")
+        val text = wrapper.wrap("\nMy block of text. My block of text. My block of text. My block of text. My block of text. My block of text.")
         val expected = "My block of text. My block of text. My block of text. My block of text. My block\nof text. My block of text."
         assertEquals(expected, text)
     }
@@ -145,10 +145,11 @@ class CodeWrapperTests {
         assertEquals(expected, text)
     }
 
+    // This is wrong: we break on space, but the line-wrapping rules in Chinese are more complicated.
     @Test
     fun testSupportsChinese() {
-        val text = wrapper.wrap("這是中國文字，這應該是太長，無法在一行中，並會按需要得到包裹的長行。這是中國文字，這應該是太長，無法在一行中，並會按需要得到包裹的長行。" + "這是中國文字，這應該是太長，無法在一行中，並會按需要得到包裹的長行。")
-        val expected = "這是中國文字，這應該是太長，無法在一行中，並會按需要得到包裹的長行。這是中國文字，這應該是太長，無法在一行中，並會按需要得到包裹的長行。這是中國文字，這應該是太\n長，無法在一行中，並會按需要得到包裹的長行。"
+        val text = wrapper.wrap("它是如何工作的呢？实际上，每个bundle在定义自己的服务配置都是跟目前为止你看到的是一样的。换句话说，一个bundle使用一个或者多个配置资源文件（通常是XML)来指定bundle所需要的参数和服务。然而，我们不直接在配置文件中使用 imports 命令导入它们，而是仅仅在bundle中调用一个服务容器扩展来为我们做同样的工作。一个服务容器扩展是 bundle 的作者创建的一个PHP类，它主要完成两件事情")
+        val expected = "它是如何工作的呢？实际上，每个bundle在定义自己的服务配置都是跟目前为止你看到的是一样的。换句话说，一个bundle使用一个或者多个配置资源文件（通常是XML)来指定bundle所需要的参数和服务。然而，我们不直接在配置文件中使用\nimports 命令导入它们，而是仅仅在bundle中调用一个服务容器扩展来为我们做同样的工作。一个服务容器扩展是 bundle\n的作者创建的一个PHP类，它主要完成两件事情"
         assertEquals(expected, text)
     }
 }
