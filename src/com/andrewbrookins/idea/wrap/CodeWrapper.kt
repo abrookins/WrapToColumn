@@ -56,8 +56,9 @@ class CodeWrapper(
     }
 
     /**
-     * Helper to wrap a string using a greedy algorithm adapted from Apache
-     * Commons Long.
+     * Helper to wrap a string using a greedy algorithm.
+     *
+     * Adapted from Apache Commons Lang.
      */
     fun wrapGreedy(str: String, wrapLength: Int): String {
         val newLineStr = lineSeparator
@@ -135,7 +136,7 @@ class CodeWrapper(
                         }
                         i += 1
                     } else {
-                        stack.removeAt(stack.size - 1)  // pop last item
+                        stack.removeAt(stack.size - 1)
                     }
                 } else {
                     stack.add(rows[i])
@@ -176,18 +177,6 @@ class CodeWrapper(
         var i = 0
         var offset = 0
 
-        // Kotlin refuses to assign vars within a while loop.
-        // https://devnet.jetbrains.com/message/5475742
-        fun costIteration(j:Int) {
-            n -= j
-            i = 0
-            offset += j
-        }
-
-        fun incrementCounter() {
-            i += 1
-        }
-
         while (true) {
             val r = Math.min(n.toDouble(), Math.pow(2.0, (i + 1.0))).toInt()
             val edge = Math.pow(2.0, i.toDouble()) + offset
@@ -200,7 +189,9 @@ class CodeWrapper(
             for (j in Math.pow(2.0, i.toDouble()).toInt().rangeTo(r - 1 - 1)) {
                 val y = cost(j + offset, r - 1 + offset)
                 if (y <= x) {
-                    costIteration(j)
+                    n -= j
+                    i = 0
+                    offset += j
                     costGreaterThanOrEqualToMinima = true
                     break
                 }
@@ -209,7 +200,7 @@ class CodeWrapper(
                 if (r == n) {
                     break
                 }
-                incrementCounter()
+                i += 1
             }
         }
 
