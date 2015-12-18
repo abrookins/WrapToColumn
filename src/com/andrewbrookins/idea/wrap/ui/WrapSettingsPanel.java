@@ -19,7 +19,6 @@ public class WrapSettingsPanel {
 
     private WrapSettingsProvider settingsProvider;
     private JTextField columnWidthOverrideField;
-    private JTextPane textPane;
     private JPanel panel;
     private JLabel columnWidthOverrideLabel;
     private JCheckBox useMinimumRaggednessAlgorithmCheckBox;

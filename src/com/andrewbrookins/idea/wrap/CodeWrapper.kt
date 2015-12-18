@@ -128,7 +128,7 @@ class CodeWrapper(
             var length = rows.size
             while (i < length) {
                 if (stack.size > 0) {
-                    val c = columns[columns.size - 1]
+                    val c = columns[stack.size - 1]
                     if (cost(stack[stack.size - 1], c) < cost(rows[i], c)) {
                         if (stack.size < columns.size) {
                             stack.add(rows[i])

@@ -145,6 +145,14 @@ class CodeWrapperTests {
         assertEquals(expected, text)
     }
 
+    @Test
+    fun testMinimumRaggedness() {
+        val minimumWrapper = CodeWrapper(width=50, useMinimumRaggedness = true)
+        val text = minimumWrapper.wrap("lk jsdflkj sdlkfj sdlkfj slkj flkj dslkfj sdlkfj lkjs dflkj sdlfkj sdlkfj lkj sdflkj sdlkj sdlkj fdslkjfsdlkjsd flkj sdflkj sdlfkj sdlfkj sdlkjf sdlkjf dslkj fdslkj fsdlkj flsdkjsldklkslkslkslkslsk djl jsdkf")
+        val expected = "lk jsdflkj sdlkfj sdlkfj slkj flkj dslkfj\nsdlkfj lkjs dflkj sdlfkj sdlkfj lkj sdflkj\nsdlkj sdlkj fdslkjfsdlkjsd flkj sdflkj\nsdlfkj sdlfkj sdlkjf sdlkjf dslkj fdslkj\nfsdlkj flsdkjsldklkslkslkslkslsk djl jsdkf"
+        assertEquals(expected, text)
+    }
+
     // This is wrong: we break on space, but the line-wrapping rules in Chinese are more complicated.
     @Test
     fun testSupportsChinese() {
