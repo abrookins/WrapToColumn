@@ -6,10 +6,9 @@ import java.util.regex.Pattern
 
 /**
  * Code-aware text wrapper.
-
- * Wrap comments like emacs wrapParagraph-paragraph command - long comments turn
- * into multiple comments, not one comment followed by code.
-
+ *
+ * Wrap comments like emacs fill-paragraph command.
+ *
  * This code was inspired by Nir Soffer's codewrap library:
  * https://pypi.python.org/pypi/codewrap/
  */
