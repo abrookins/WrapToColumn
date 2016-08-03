@@ -3,31 +3,57 @@
 This plugin wraps selected text or, if no text is selected, the current line
 to the column width specified in the editor's "Right Margin (columns)" setting.
 
-As of version 1.0, the plugin respects per-language right column settings (assuming
-your version of Intellij-based editor supports that feature).
+**Versions newer than 1.0** respect language-specific right column settings
+(assuming your version of Intellij-based editor supports that feature).
 
-As of version 1.1.0, the plugin allows you to specify a column width that
+**Versions newer than 1.1.0** allow you to specify a column width that
 overrides the current language setting and global column setting. See the
 "Settings" section for more details.
 
 This is a replacement for the Fill Paragraph command, which doesn't work for me.
 
 
+## Installing
+
+Install the plugin from an Intellij editor (like Intellij
+Ultimate, PyCharm, etc.) inside the Preferences -> Plugins window.
+
+### From the plugin repository
+
+To install from the Plugin Repository:
+ 
+* Open Preferences -> Plugins and click the Browse repositories ... butto
+* Search for "Wrap to column"
+* Choose Wrap to Column
+* Click Install
+* Restart the editor when prompted
+
+### To install from GitHub
+
+To install the latest zip from GitHub:
+
+* Either clone the repository or download the latest release (https://github.com/abrookins/WrapToColumn/releases)
+* Open your Intellij editor of choice
+* Choose Preferences -> Plugins -> Install plugin from disk
+* Choose the **WrapToColumn.zip** (not the .jar file) file in the source checkout or your Downloads folder
+
+
 ## Running
 
-You can install this plugin directly from an Intellij editor (like Intellij
-Ultimate, PyCharm, etc.) inside the Preferences -> Plugins -> Browse
-repositories... window.
+### Keyboard shortcut
 
-To install the latest zip from GitHub, clone the repository, open your Intellij
-editor of choice, go to the Preferences window -> Plugins -> Install plugin
-from disk, then choose the WrapToColumn.zip file located in the source repo.
+The default keyboard shortcut is Command+Control+Shift+W. It's not the best
+shortcut, so feel free to change it in your keymap (Preferences -> Keymap) or
+IeaVim configuration file.
 
+**Note**: Commands invoked with `:action` using IdeaVim cannot yet accept a
+visual range. So I suggest sticking to the IDE's keyboard shortcuts (using the
+Keymap setting) rather than IdeaVim's configuration file.
 
-## Keyboard shortcut
+### Menu item
 
-The default keyboard shortcut is Command+Control+Shift+W. Feel free to change
-that beast in your keymap.
+A menu item should exist for the plugin in the Edit drop-down menu: Edit -> Wrap
+to Column. If you like using a mouse, you can click on that.
 
 
 ## Settings
@@ -50,11 +76,6 @@ reflowed as if the tabs were characters spaced at your configured tab width.
 
 This means that the text will look right to you if your tab width is 4, but not
 to your co-maintainer whose tab width is 8. This seems to be the best trade-off.
-
-
-## Menu item
-
-A menu item should exist for the plugin in the Edit drop-down menu: Edit -> Wrap to Column
 
 
 ## A note about monospaced versus variable width fonts
