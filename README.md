@@ -22,7 +22,7 @@ Ultimate, PyCharm, etc.) inside the Preferences -> Plugins window.
 
 To install from the Plugin Repository:
  
-* Open Preferences -> Plugins and click the Browse repositories ... butto
+* Open Preferences -> Plugins and click the Browse repositories ... button
 * Search for "Wrap to column"
 * Choose Wrap to Column
 * Click Install
@@ -68,6 +68,16 @@ This setting exists in Settings (Preferences on OS X) -> Tools -> Wrap to Column
 
 The setting is named "Column width override" and accepts an integer value.
 
+### Minimum raggedness
+
+By default, text is wrapped using a greedy line-breaking algorithm. This can
+result in some lines having more whitespace than others.
+
+You can turn on an alternative "minimum raggedness" algorithm in Settings ->
+Tools -> Wrap to Column. When this setting is on, the plugin will reconfigure
+text in a paragraph to produce the least amount of whitespace possible. Try it
+and see if you like it!
+
 
 ### Tab width
 
@@ -94,9 +104,10 @@ Annnyway, I recommend that you use a monospaced font if you can.
 
 
 ## Roadmap
-* Bug fixes 
+* Bug fixes
 
 
 ## License
 
-This plugin is licensed under the GPLv2 and Apache License 2.0 (I hear they're incompatible, but IANAL). See COPYING.txt and LICENSE.txt.
+This plugin is licensed under the GPLv2 and Apache License 2.0. See COPYING.txt
+and LICENSE.txt.

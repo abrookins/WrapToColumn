@@ -29,6 +29,7 @@ class WrapAction : EditorAction(WrapAction.WrapHandler()) {
                     val document = editor.document
                     val selectionModel = editor.selectionModel
                     val columnWidthOverride = WrapSettingsProvider.getInstance().state?.columnWidthOverride
+                    val useMinimumRaggednessAlgorithm = WrapSettingsProvider.getInstance().state?.useMinimumRaggednessAlgorithm ?: false
                     val columnWidth = columnWidthOverride ?: editor.settings.getRightMargin(project)
                     val tabWidth = editor.settings.getTabSize(project)
 
@@ -37,7 +38,7 @@ class WrapAction : EditorAction(WrapAction.WrapHandler()) {
                     }
 
                     val text = selectionModel.selectedText ?: return
-                    val wrapper = CodeWrapper(width = columnWidth, tabWidth = tabWidth)
+                    val wrapper = CodeWrapper(width = columnWidth, tabWidth = tabWidth, useMinimumRaggedness = useMinimumRaggednessAlgorithm)
                     val wrappedText = wrapper.wrap(text)
 
                     document.replaceString(selectionModel.selectionStart, selectionModel.selectionEnd, wrappedText)
