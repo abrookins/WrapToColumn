@@ -113,11 +113,20 @@
 
   <actions>
     <!-- Add your actions here -->
-      <action id="com.andrewbrookins.idea.wrap.WrapAction" class="com.andrewbrookins.idea.wrap.WrapAction" text="Wrap to Column"
-              description="Wrap selected text to the currently configured column width.">
-          <add-to-group group-id="EditMenu" anchor="last"/>
-          <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl meta W"/>
-          <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl alt W"/>
-      </action>
+    <action id="com.andrewbrookins.idea.wrap.WrapAction" class="com.andrewbrookins.idea.wrap.WrapAction"
+            text="Wrap Line to Column"
+            description="Wrap selected text or current line to the currently configured column width.">
+      <add-to-group group-id="EditMenu" anchor="last"/>
+      <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl meta W"/>
+      <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl alt W"/>
+    </action>
+
+    <action id="com.andrewbrookins.idea.wrap.WrapParagraphAction" class="com.andrewbrookins.idea.wrap.WrapParagraphAction"
+            text="Wrap Paragraph to Column"
+            description="Wrap paragraph to the currently configured column width.">
+      <add-to-group group-id="EditMenu" anchor="last"/>
+      <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl meta P"/>
+      <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl alt P"/>
+    </action>
   </actions>
 </idea-plugin>
