@@ -1,22 +1,41 @@
 # Wrap to Column: an Intellij Plugin
 
-This plugin wraps selected text or, if no text is selected, the current line
-to the column width specified in the editor's "Right Margin (columns)" setting.
+This plugin wraps text to a maximum line width, as defined in the section
+"Setting the maximum line width." It is intended as a replacement for the `gq`
+command in Vim and `fill-paragraph` in Emacs.
 
-**Versions newer than 1.0** respect language-specific right column settings
-(assuming your version of Intellij-based editor supports that feature).
 
-**Versions newer than 1.1.0** allow you to specify a column width that
-overrides the current language setting and global column setting. See the
-"Settings" section for more details.
+## Provided actions
 
-This is a replacement for the Fill Paragraph command, which doesn't work for me.
+Two commands are provided:
+
+* Wrap Line to Column: Wraps selected text or the current line if no text is
+  selected. This is useful for IdeaVim users who wish to pair the command with
+  motions like `vip` (select current paragraph).
+
+* Wrap Paragraph to Column: Wraps the paragraph in which the cursor appears.
+  Selected text is ignored (no selection is needed).
+
+
+## Setting the maximum line width
+
+The maximum width of wrapped text is based on one of the following settings, in
+this order of priority:
+ 
+* The "Right margin override" setting found in the Wrap to Column settings
+  panel
+
+* The right column setting configured for the language of the currently active
+  editor tab
+
+* The editor's default right column setting
 
 
 ## Installing
 
-Install the plugin from an Intellij editor (like Intellij
-Ultimate, PyCharm, etc.) inside the Preferences -> Plugins window.
+Install the plugin from an Intellij editor (like Intellij Ultimate, PyCharm,
+etc.) inside the Preferences -> Plugins window.
+
 
 ### From the plugin repository
 
@@ -28,6 +47,7 @@ To install from the Plugin Repository:
 * Click Install
 * Restart the editor when prompted
 
+
 ### To install from GitHub
 
 To install the latest zip from GitHub:
@@ -37,28 +57,39 @@ To install the latest zip from GitHub:
 * Choose Preferences -> Plugins -> Install plugin from disk
 * Choose the **WrapToColumn.zip** (not the .jar file) file in the source checkout or your Downloads folder
 
-
 ## Running
 
-### Keyboard shortcut
+### Keyboard shortcuts
 
-The default keyboard shortcut is Command+Control+Shift+W. It's not the best
-shortcut, so feel free to change it in your keymap (Preferences -> Keymap) or
-IeaVim configuration file.
+The commands to run Wrap Line to Column are:
+
+* Mac: Command + Control + Shift + W
+* PC: Control + Alt + Shift + W
+
+The commands to run Wrap Paragraph to Column are:
+
+* Mac: Command + Control + Shift + P
+* PC: Control + Alt + Shift + P
+
+Feel free to change these in your keymap (Preferences -> Keymap) or IeaVim
+configuration file!
 
 **Note**: Commands invoked with `:action` using IdeaVim cannot yet accept a
 visual range. So I suggest sticking to the IDE's keyboard shortcuts (using the
 Keymap setting) rather than IdeaVim's configuration file.
 
+
 ### Menu item
 
-A menu item should exist for the plugin in the Edit drop-down menu: Edit -> Wrap
-to Column. If you like using a mouse, you can click on that.
+Menu items should exist for both commands in the Edit drop-down menu:
+
+* Edit -> Wrap Line to Column
+* Edit -> Wrap Paragraph to Column
 
 
 ## Settings
 
-### Column width
+### Right margin override
 
 By default, this plugin uses your configured global or language-specific right
 margin setting as the column width to wrap at. However, you may provide a column
@@ -66,7 +97,8 @@ width that will override both of these settings.
 
 This setting exists in Settings (Preferences on OS X) -> Tools -> Wrap to Column.
 
-The setting is named "Column width override" and accepts an integer value.
+The setting is named "Right margin override" and accepts an integer value.
+
 
 ### Minimum raggedness
 

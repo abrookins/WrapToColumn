@@ -41,6 +41,8 @@ class WrapParagraphAction : EditorAction(WrapParagraphAction.WrapHandler()) {
                     var upwardLineTracker = startingLine
                     var downwardLineTracker = startingLine
 
+                    // Starting from the current line, move upward until we reach an empty line
+                    // or the start of the document.
                     if (startingLine > 1) {
                         while (true) {
                             upwardLineTracker--
@@ -57,7 +59,8 @@ class WrapParagraphAction : EditorAction(WrapParagraphAction.WrapHandler()) {
                         }
                     }
 
-                    // Don't keep going down after we reach the last line.
+                    // Starting from the current line, move downward until we reach an empty line
+                    // or the end of the document.
                     if (downwardLineTracker < documentEnd) {
                         while (true) {
                             downwardLineTracker++
