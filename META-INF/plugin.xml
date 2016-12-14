@@ -20,8 +20,10 @@
           the command with motions like `vip` (select current paragraph).
         </li>
         <li>
-          <strong>Wrap Paragraph to Column</strong>: Wraps the paragraph (multiple lines) in
-          which the cursor appears. No selection is needed, and will be ignored.
+          <strong>Wrap Paragraph to Column</strong>: Wraps the paragraph in which the cursor appears.
+          A paragraph is defined as text offset by blank lines -- including lines that
+          only start with what looks like comment syntax (e.g., `//   `). Selected text
+          is ignored (no selection is needed).
         </li>
       </ul>
     </p>

@@ -14,7 +14,9 @@ Two commands are provided:
   motions like `vip` (select current paragraph).
 
 * Wrap Paragraph to Column: Wraps the paragraph in which the cursor appears.
-  Selected text is ignored (no selection is needed).
+  A paragraph is defined as text offset by blank lines -- including lines that
+  only start with what looks like comment syntax (e.g., `//   `). Selected text
+  is ignored (no selection is needed).
 
 
 ## Setting the maximum line width
