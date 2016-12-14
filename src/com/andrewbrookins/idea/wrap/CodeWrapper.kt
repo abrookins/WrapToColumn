@@ -7,8 +7,8 @@ import java.util.regex.Pattern
  *
  * Wrap comments like emacs fill-paragraph command.
  *
- * This code was inspired by Nir Soffer's codewrap library:
- * https://pypi.python.org/pypi/codewrap/
+ * This code was inspired by Nir Soffer's codewrap library: * https://pypi.python.org/pypi/codewrap/ * This code was inspired by Nir Soffer's codewrap library: * https://pypi.python.org/pypi/codewrap/
+ * This code was inspired by Nir Soffer's codewrap library: * https://pypi.python.org/pypi/codewrap/ * This code was inspired by Nir Soffer's codewrap library: * https://pypi.python.org/pypi/codewrap/
  */
 class CodeWrapper(
         val commentRegex: String = "(/\\*+|\\*/|\\*|\\.|#+|//+|;+)?",

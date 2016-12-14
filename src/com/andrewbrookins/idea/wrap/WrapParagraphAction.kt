@@ -7,10 +7,20 @@ import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.openapi.actionSystem.LangDataKeys
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.Logger
+import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.actionSystem.EditorAction
 import com.intellij.openapi.editor.actionSystem.EditorActionHandler
 import com.intellij.openapi.util.TextRange
+
+
+data class TextData(val lineStart: Int, val lineEnd: Int, val lineData: CodeWrapper.LineData)
+fun getTextAtOffset(document: Document, wrapper: CodeWrapper, offset: Int): TextData {
+    val lineStart = document.getLineStartOffset(offset)
+    val lineEnd = document.getLineEndOffset(offset)
+    val text = document.getText(TextRange(lineStart, lineEnd))
+    return TextData(lineStart, lineEnd, wrapper.splitOnIndent(text))
+}
 
 
 class WrapParagraphAction : EditorAction(WrapParagraphAction.WrapHandler()) {
@@ -41,40 +51,31 @@ class WrapParagraphAction : EditorAction(WrapParagraphAction.WrapHandler()) {
                     var upwardLineTracker = startingLine
                     var downwardLineTracker = startingLine
 
+                    // Don't try to wrap if the user starts on a line that looks blank.
+                    if (getTextAtOffset(document, wrapper, startingLine).lineData.rest.isBlank()) {
+                        return;
+                    }
+
                     // Starting from the current line, move upward until we reach an empty line
                     // or the start of the document.
-                    if (startingLine > 1) {
-                        while (true) {
-                            upwardLineTracker--
-                            val lineStart = document.getLineStartOffset(upwardLineTracker)
-                            val lineEnd = document.getLineEndOffset(upwardLineTracker)
-                            val text = document.getText(TextRange(lineStart, lineEnd))
-                            val lineData = wrapper.splitOnIndent(text)
-
-                            if (lineData.rest.isBlank() || upwardLineTracker == 1) {
-                                break
-                            }
-
-                            selectionStart = lineStart
+                    while (upwardLineTracker > 0) {
+                        upwardLineTracker--
+                        val textData = getTextAtOffset(document, wrapper, upwardLineTracker)
+                        if (textData.lineData.rest.isBlank()) {
+                            break
                         }
+                        selectionStart = textData.lineStart
                     }
 
                     // Starting from the current line, move downward until we reach an empty line
                     // or the end of the document.
-                    if (downwardLineTracker < documentEnd) {
-                        while (true) {
-                            downwardLineTracker++
-                            val lineStart = document.getLineStartOffset(downwardLineTracker)
-                            val lineEnd = document.getLineEndOffset(downwardLineTracker)
-                            val text = document.getText(TextRange(lineStart, lineEnd))
-                            val lineData = wrapper.splitOnIndent(text)
-
-                            if (lineData.rest.isBlank() || downwardLineTracker == documentEnd) {
-                                break
-                            }
-
-                            selectionEnd = lineEnd
+                    while (downwardLineTracker < documentEnd) {
+                        downwardLineTracker++
+                        val textData = getTextAtOffset(document, wrapper, downwardLineTracker)
+                        if (textData.lineData.rest.isBlank()) {
+                            break
                         }
+                        selectionEnd = textData.lineEnd
                     }
 
                     val text = document.getText(TextRange(selectionStart, selectionEnd))

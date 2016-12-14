@@ -38,6 +38,10 @@ class WrapAction : EditorAction(WrapAction.WrapHandler()) {
                     }
 
                     val text = selectionModel.selectedText ?: return
+                    if (text.isBlank()) {
+                        return
+                    }
+
                     val wrapper = CodeWrapper(width = columnWidth, tabWidth = tabWidth, useMinimumRaggedness = useMinimumRaggednessAlgorithm)
                     val wrappedText = wrapper.wrap(text)
 
