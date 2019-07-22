@@ -83,7 +83,7 @@ When using IdeaVim, you can invoke the above commands using the following action
 For example, you can add the following line to `.ideavimrc` to emulate Vim's `gq` command:
 
 ```
-nmap gq :action com.andrewbrookins.idea.wrap.WrapAction<BR>
+nmap gq :action com.andrewbrookins.idea.wrap.WrapAction<CR>
 ```
 
 
