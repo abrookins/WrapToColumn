@@ -76,9 +76,15 @@ The commands to run Wrap Paragraph to Column are:
 Feel free to change these in your keymap (Preferences -> Keymap) or IeaVim
 configuration file!
 
-**Note**: Commands invoked with `:action` using IdeaVim cannot yet accept a
-visual range. So I suggest sticking to the IDE's keyboard shortcuts (using the
-Keymap setting) rather than IdeaVim's configuration file.
+When using IdeaVim, you can invoke above commands using the following actions:
+* Wrap Line to Column: `com.andrewbrookins.idea.wrap.WrapAction`
+* Wrap Paragraph to Column: `com.andrewbrookins.idea.wrap.WrapParagraphAction`
+
+For example, you can add the following line to `.ideavimrc` to emulate Vim's `gq` command:
+
+```
+nmap gq :action com.andrewbrookins.idea.wrap.WrapAction<BR>
+```
 
 
 ### Menu item
