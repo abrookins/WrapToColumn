@@ -76,7 +76,7 @@ The commands to run Wrap Paragraph to Column are:
 Feel free to change these in your keymap (Preferences -> Keymap) or IeaVim
 configuration file!
 
-When using IdeaVim, you can invoke above commands using the following actions:
+When using IdeaVim, you can invoke the above commands using the following actions:
 * Wrap Line to Column: `com.andrewbrookins.idea.wrap.WrapAction`
 * Wrap Paragraph to Column: `com.andrewbrookins.idea.wrap.WrapParagraphAction`
 
