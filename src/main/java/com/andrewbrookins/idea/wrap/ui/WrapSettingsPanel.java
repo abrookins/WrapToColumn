@@ -1,12 +1,9 @@
 package com.andrewbrookins.idea.wrap.ui;
 
-import com.intellij.openapi.util.BooleanGetter;
+import com.andrewbrookins.idea.wrap.config.WrapSettingsProvider;
 import com.intellij.openapi.util.Comparing;
 
 import javax.swing.*;
-
-import com.andrewbrookins.idea.wrap.config.WrapSettingsProvider;
-import sun.jvm.hotspot.types.JBooleanField;
 
 
 /**

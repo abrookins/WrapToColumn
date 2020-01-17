@@ -22,10 +22,10 @@ class WrapAction : EditorAction(WrapAction.WrapHandler()) {
     }
 
     private class WrapHandler : EditorActionHandler() {
-        override fun execute(editor: Editor, dataContext: DataContext) {
+        override fun execute(editor: Editor, dataContext: DataContext?) {
             ApplicationManager.getApplication().runWriteAction(object : Runnable {
                 override fun run() {
-                    val project = LangDataKeys.PROJECT.getData(dataContext)
+                    val project = LangDataKeys.PROJECT.getData(dataContext!!)
                     val document = editor.document
                     val selectionModel = editor.selectionModel
                     val columnWidthOverride = WrapSettingsProvider.getInstance().state?.columnWidthOverride

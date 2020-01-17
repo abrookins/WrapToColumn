@@ -140,7 +140,7 @@ then the individual glyphs of the font take up more than one column.
 The plugin will still wrap your text to e.g. 80 characters wide, but the
 position won't match Intellij's right margin guide.
 
-Annnyway, I recommend that you use a monospaced font if you can.
+Anyway, I recommend that you use a monospaced font if you can.
 
 
 ## Roadmap
