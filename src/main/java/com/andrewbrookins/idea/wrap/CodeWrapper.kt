@@ -111,7 +111,7 @@ class CodeWrapper(
         val emptyCommentPattern = Pattern.compile("$indentRegex\$", Pattern.MULTILINE)
         val emptyCommentMatcher = emptyCommentPattern.matcher(paragraph)
         val paragraphLength = paragraph.length
-        var location: Int = 0
+        var location = 0
 
         while (emptyCommentMatcher.find()) {
             val match = emptyCommentMatcher.group()

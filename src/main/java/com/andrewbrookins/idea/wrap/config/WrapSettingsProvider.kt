@@ -6,8 +6,6 @@ import com.intellij.openapi.components.ExportableApplicationComponent
 import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
-import com.intellij.openapi.components.StoragePathMacros
-
 import java.io.File
 
 
@@ -16,11 +14,7 @@ import java.io.File
  */
 @State(
     name = "WrapSettingsProvider",
-    storages = arrayOf(
-        Storage(
-            file = StoragePathMacros.APP_CONFIG + "/wrap.xml"
-        )
-    )
+    storages = [Storage("wrap.xml")]
 )
 class WrapSettingsProvider : PersistentStateComponent<WrapSettingsProvider.State>, ExportableApplicationComponent {
     private var state = State()

@@ -33,10 +33,10 @@ class WrapParagraphAction : EditorAction(WrapParagraphAction.WrapHandler()) {
     }
 
     private class WrapHandler : EditorActionHandler() {
-        override fun execute(editor: Editor, dataContext: DataContext) {
+        override fun execute(editor: Editor, dataContext: DataContext?) {
             ApplicationManager.getApplication().runWriteAction(object : Runnable {
                 override fun run() {
-                    val project = LangDataKeys.PROJECT.getData(dataContext)
+                    val project = LangDataKeys.PROJECT.getData(dataContext!!)
                     val document = editor.document
                     val columnWidthOverride = WrapSettingsProvider.getInstance().state?.columnWidthOverride
                     val useMinimumRaggednessAlgorithm = WrapSettingsProvider.getInstance().state?.useMinimumRaggednessAlgorithm ?: false
@@ -53,7 +53,7 @@ class WrapParagraphAction : EditorAction(WrapParagraphAction.WrapHandler()) {
 
                     // Don't try to wrap if the user starts on a line that looks blank.
                     if (getTextAtOffset(document, wrapper, startingLine).lineData.rest.isBlank()) {
-                        return;
+                        return
                     }
 
                     // Starting from the current line, move upward until we reach an empty line
