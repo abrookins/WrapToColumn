@@ -15,7 +15,7 @@ import com.intellij.openapi.util.TextRange
 
 
 data class TextData(val lineStart: Int, val lineEnd: Int, val lineData: CodeWrapper.LineData)
-fun getTextAtOffset(document: Document, wrapper: CodeWrapper, offset: Int): TextData {
+fun getTextAtLine(document: Document, wrapper: CodeWrapper, offset: Int): TextData {
     val lineStart = document.getLineStartOffset(offset)
     val lineEnd = document.getLineEndOffset(offset)
     val text = document.getText(TextRange(lineStart, lineEnd))
@@ -23,7 +23,7 @@ fun getTextAtOffset(document: Document, wrapper: CodeWrapper, offset: Int): Text
 }
 
 
-class WrapParagraphAction : EditorAction(WrapParagraphAction.WrapHandler()) {
+class WrapParagraphAction : EditorAction(WrapHandler()) {
 
     override fun update(e: AnActionEvent) {
         super.update(e)
@@ -48,39 +48,48 @@ class WrapParagraphAction : EditorAction(WrapParagraphAction.WrapHandler()) {
                     val documentEnd = document.getLineNumber(document.textLength)
                     var selectionStart =  document.getLineStartOffset(startingLine)
                     var selectionEnd = document.getLineEndOffset(startingLine)
-                    var upwardLineTracker = startingLine
-                    var downwardLineTracker = startingLine
+                    val selectionModel = editor.selectionModel
 
-                    // Don't try to wrap if the user starts on a line that looks blank.
-                    if (getTextAtOffset(document, wrapper, startingLine).lineData.rest.isBlank()) {
+                    val text: String
+
+                    if (selectionModel.hasSelection()) {
+                        text = selectionModel.selectedText ?: return
+                        selectionStart = selectionModel.selectionStart
+                        selectionEnd = selectionModel.selectionEnd
+                    } else {
+                        // Don't try to wrap if the user starts on a line that looks blank.
+                        if (getTextAtLine(document, wrapper, startingLine).lineData.rest.isBlank()) {
+                            return
+                        }
+
+                        // Starting from the current line, move upward until we reach an empty line
+                        // or the start of the document.
+                        for (lineNum in startingLine - 1 downTo 0) {
+                            val textData = getTextAtLine(document, wrapper, lineNum)
+                            if (textData.lineData.rest.isBlank()) {
+                                break
+                            }
+                            selectionStart = textData.lineStart
+                        }
+
+                        // Starting from the current line, move downward until we reach an empty line
+                        // or the end of the document.
+                        for (lineNum in startingLine + 1 .. documentEnd) {
+                            val textData = getTextAtLine(document, wrapper, lineNum)
+                            if (textData.lineData.rest.isBlank()) {
+                                break
+                            }
+                            selectionEnd = textData.lineEnd
+                        }
+
+                        text = document.getText(TextRange(selectionStart, selectionEnd))
+                    }
+
+                    if (text.isBlank()) {
                         return
                     }
 
-                    // Starting from the current line, move upward until we reach an empty line
-                    // or the start of the document.
-                    while (upwardLineTracker > 0) {
-                        upwardLineTracker--
-                        val textData = getTextAtOffset(document, wrapper, upwardLineTracker)
-                        if (textData.lineData.rest.isBlank()) {
-                            break
-                        }
-                        selectionStart = textData.lineStart
-                    }
-
-                    // Starting from the current line, move downward until we reach an empty line
-                    // or the end of the document.
-                    while (downwardLineTracker < documentEnd) {
-                        downwardLineTracker++
-                        val textData = getTextAtOffset(document, wrapper, downwardLineTracker)
-                        if (textData.lineData.rest.isBlank()) {
-                            break
-                        }
-                        selectionEnd = textData.lineEnd
-                    }
-
-                    val text = document.getText(TextRange(selectionStart, selectionEnd))
                     val wrappedText = wrapper.wrap(text)
-
                     document.replaceString(selectionStart, selectionEnd, wrappedText)
                 }
             })
