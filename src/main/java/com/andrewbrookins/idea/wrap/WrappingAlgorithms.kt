@@ -121,14 +121,14 @@ fun wrapMinimumRaggedness(text: String, width: Int): Array<String> {
     var offset = 0
 
     while (true) {
-        val r = Math.min(n.toDouble(), 2.0.pow((i + 1.0))).toInt()
-        val edge = 2.0.pow(i.toDouble()) + offset
+        val r = Math.min(n, 2 shl i)
+        val edge = (1 shl i) + offset
         // Python ranges drop the last item, but Kotlin's preserve it -- so we subtract one.
-        smawk(((0 + offset) until edge.toInt()).toMutableList(), (edge.toInt() until (r + offset)).toMutableList().toTypedArray())
+        smawk(((0 + offset) until edge).toMutableList(), (edge until (r + offset)).toMutableList().toTypedArray())
         val x = minima[(r - 1 + offset)]
         var costGreaterThanOrEqualToMinima = false
 
-        for (j in 2.0.pow(i.toDouble()).toInt() until r - 1) {
+        for (j in 1 shl i until r - 1) {
             val y = cost(j + offset, r - 1 + offset)
             if (y <= x) {
                 n -= j
