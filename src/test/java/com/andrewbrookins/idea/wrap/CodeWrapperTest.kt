@@ -6,7 +6,7 @@ import org.junit.Assert.*
 
 class CodeWrapperTests {
 
-    val wrapper: CodeWrapper = CodeWrapper()
+    private val wrapper: CodeWrapper = CodeWrapper()
 
     @Test
     fun testCreateWithoutOptions() {
@@ -192,7 +192,7 @@ class CodeWrapperTests {
                 " * Fourth paragraph.\n" +
                 " * <Br />\n" +
                 " * Fifth paragraph is the last one.\n" +
-                " */";
+                " */"
 
         assertEquals(expected, text)
     }

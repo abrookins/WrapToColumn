@@ -6,7 +6,6 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.openapi.actionSystem.LangDataKeys
 import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.actionSystem.EditorAction
@@ -95,9 +94,5 @@ class WrapParagraphAction : EditorAction(WrapHandler()) {
                 }
             })
         }
-    }
-
-    companion object {
-        private val log = Logger.getInstance(WrapParagraphAction::class.java)
     }
 }

@@ -1,12 +1,13 @@
 package com.andrewbrookins.idea.wrap
 
+import kotlin.math.pow
+
 /**
  * Helper to wrap a string using a greedy algorithm.
  *
  * Adapted from Apache Commons Lang.
  */
 fun wrapGreedy(str: String, wrapLength: Int, lineSeparator: String): String {
-    val newLineStr = lineSeparator
     val inputLineLength = str.length
     val space = ' '
     val wrappedLine = StringBuffer(inputLineLength + 32)
@@ -24,13 +25,13 @@ fun wrapGreedy(str: String, wrapLength: Int, lineSeparator: String): String {
 
         if (spaceToWrapAt >= offset) {
             wrappedLine.append(str.substring(offset, spaceToWrapAt))
-            wrappedLine.append(newLineStr)
+            wrappedLine.append(lineSeparator)
             offset = spaceToWrapAt + 1
         } else {
             spaceToWrapAt = str.indexOf(space, wrapLength + offset)
             if (spaceToWrapAt >= 0) {
                 wrappedLine.append(str.substring(offset, spaceToWrapAt))
-                wrappedLine.append(newLineStr)
+                wrappedLine.append(lineSeparator)
                 offset = spaceToWrapAt + 1
             } else {
                 wrappedLine.append(str.substring(offset))
@@ -51,27 +52,26 @@ fun wrapGreedy(str: String, wrapLength: Int, lineSeparator: String): String {
 fun wrapMinimumRaggedness(text: String, width: Int): Array<String> {
     val words = text.split(' ')
     val count = words.size
-    var offsets = arrayListOf(0.0)
+    val offsets = arrayListOf(0.0)
     for (w in words) {
         offsets.add(offsets[offsets.size - 1] + w.length)
     }
 
-    var minima = arrayOf(0.0) + Array(count, { Math.pow(10.0, 20.0) })
-    var breaks = Array(count + 1, { 0 })
+    val minima = arrayOf(0.0) + Array(count, { Math.pow(10.0, 20.0) })
+    val breaks = Array(count + 1, { 0 })
 
     fun cost(i: Int, j: Int): Double {
         val w = offsets[j] - offsets[i] + j - i - 1
         if (w > width) {
-            return Math.pow(10.0, 10.0) * (w - width)
+            return 10.0.pow(10.0) * (w - width)
         }
-        return minima[i] + Math.pow((width - w), 2.0)
+        return minima[i] + (width - w).pow(2.0)
     }
 
     fun smawk(rows: MutableList<Int>, columns: Array<Int>) {
-        var stack = arrayListOf<Int>()
+        val stack = arrayListOf<Int>()
         var i = 0
-        var j: Int
-        var length = rows.size
+        val length = rows.size
         while (i < length) {
             if (stack.size > 0) {
                 val c = columns[stack.size - 1]
@@ -95,7 +95,7 @@ fun wrapMinimumRaggedness(text: String, width: Int): Array<String> {
         }
 
         i = 0
-        j = 0
+        var j = 0
         var end: Int
         while (j < columns.size) {
             if (j + 1 < columns.size) {
@@ -121,15 +121,14 @@ fun wrapMinimumRaggedness(text: String, width: Int): Array<String> {
     var offset = 0
 
     while (true) {
-        val r = Math.min(n.toDouble(), Math.pow(2.0, (i + 1.0))).toInt()
-        val edge = Math.pow(2.0, i.toDouble()) + offset
+        val r = Math.min(n.toDouble(), 2.0.pow((i + 1.0))).toInt()
+        val edge = 2.0.pow(i.toDouble()) + offset
         // Python ranges drop the last item, but Kotlin's preserve it -- so we subtract one.
-        smawk((0 + offset).rangeTo(edge.toInt() - 1).toMutableList(), edge.toInt().rangeTo((r + offset).toInt() - 1).toMutableList().toTypedArray())
-        val x = minima[(r - 1 + offset).toInt()]
+        smawk(((0 + offset) until edge.toInt()).toMutableList(), (edge.toInt() until (r + offset)).toMutableList().toTypedArray())
+        val x = minima[(r - 1 + offset)]
         var costGreaterThanOrEqualToMinima = false
 
-        // Python ranges drop the last item, but Kotlin's preserve it -- so we subtract one.
-        for (j in Math.pow(2.0, i.toDouble()).toInt().rangeTo(r - 1 - 1)) {
+        for (j in 2.0.pow(i.toDouble()).toInt() until r - 1) {
             val y = cost(j + offset, r - 1 + offset)
             if (y <= x) {
                 n -= j
@@ -152,7 +151,7 @@ fun wrapMinimumRaggedness(text: String, width: Int): Array<String> {
     while (j > 0) {
         i = breaks[j]
         // Python ranges drop the last item, but Kotlin's preserve it -- so we subtract one.
-        lines.add(words.slice(i..j - 1).joinToString(" "))
+        lines.add(words.slice(i until j).joinToString(" "))
         j = i
     }
     return lines.reversed().toTypedArray()
