@@ -6,7 +6,6 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.openapi.actionSystem.LangDataKeys
 import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.actionSystem.EditorAction
@@ -15,9 +14,9 @@ import com.intellij.openapi.util.TextRange
 
 
 data class TextData(val lineStart: Int, val lineEnd: Int, val lineData: CodeWrapper.LineData)
-fun getTextAtLine(document: Document, wrapper: CodeWrapper, offset: Int): TextData {
-    val lineStart = document.getLineStartOffset(offset)
-    val lineEnd = document.getLineEndOffset(offset)
+fun getTextAtLine(document: Document, wrapper: CodeWrapper, lineNum: Int): TextData {
+    val lineStart = document.getLineStartOffset(lineNum)
+    val lineEnd = document.getLineEndOffset(lineNum)
     val text = document.getText(TextRange(lineStart, lineEnd))
     return TextData(lineStart, lineEnd, wrapper.splitOnIndent(text))
 }
@@ -34,6 +33,7 @@ class WrapParagraphAction : EditorAction(WrapHandler()) {
 
     private class WrapHandler : EditorActionHandler() {
         override fun execute(editor: Editor, dataContext: DataContext?) {
+            super.execute(editor, dataContext)
             ApplicationManager.getApplication().runWriteAction(object : Runnable {
                 override fun run() {
                     val project = LangDataKeys.PROJECT.getData(dataContext!!)
@@ -94,9 +94,5 @@ class WrapParagraphAction : EditorAction(WrapHandler()) {
                 }
             })
         }
-    }
-
-    companion object {
-        private val log = Logger.getInstance(WrapParagraphAction::class.java)
     }
 }

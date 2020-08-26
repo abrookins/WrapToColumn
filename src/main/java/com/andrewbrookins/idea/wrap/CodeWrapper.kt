@@ -7,36 +7,38 @@ import java.util.regex.Pattern
  *
  * Wrap comments like emacs fill-paragraph command.
  *
- * This code was inspired by Nir Soffer's codewrap library: * https://pypi.python.org/pypi/codewrap/ * This code was inspired by Nir Soffer's codewrap library: * https://pypi.python.org/pypi/codewrap/
- * This code was inspired by Nir Soffer's codewrap library: * https://pypi.python.org/pypi/codewrap/ * This code was inspired by Nir Soffer's codewrap library: * https://pypi.python.org/pypi/codewrap/
+ * This code was inspired by Nir Soffer's codewrap library: * https://pypi.python.org/pypi/codewrap/
  */
 class CodeWrapper(
-        val commentRegex: String = "(/\\*+|\\*/|\\*|\\.|#+|//+|;+)?",
+    private val commentRegex: Regex = "(/\\*+|\\*/|\\*|\\.|#+|//+|;+)?".toRegex(),
 
-        val newlineRegex: String = "(\\n|\\r\\n)",
+    private val newlineRegex: Regex = "(\\r?\\n)".toRegex(),
 
-        // A string that contains only two new lines demarcates a paragraph.
-        val paragraphSeparatorPattern: Pattern = Pattern.compile("$newlineRegex\\s*$commentRegex\\s*$newlineRegex"),
+    private val htmlSeparatorsRegex: Regex = "<[pP]>|<[bB][rR] ?/?>".toRegex(),
 
-        val tabPlaceholder: String = "☃",
+    // A string that contains only two new lines demarcates a paragraph.
+    private val paragraphSeparatorPattern: Pattern = Pattern.compile(
+            "($newlineRegex)\\s*$commentRegex\\s*($htmlSeparatorsRegex)?$newlineRegex"),
 
-        // A string containing a comment or empty space is considered an indent.
-        val indentRegex: String = "^(\\s|$tabPlaceholder)*$commentRegex\\s*",
-        val indentPattern: Pattern = Pattern.compile(indentRegex),
+    private val tabPlaceholder: String = "☃",
 
-        // New lines appended to text during wrapping will use this character.
-        // NOTE: Intellij always uses \n character for new lines and UI
-        // components will fail assertion checks if they receive \r\n. The
-        // correct line ending is used when saving the file.
-        val lineSeparator: String = "\n",
+    // A string containing a comment or empty space is considered an indent.
+    private val indentRegex: String = "^(\\s|$tabPlaceholder)*$commentRegex\\s*($htmlSeparatorsRegex)?",
+    private val indentPattern: Pattern = Pattern.compile(indentRegex),
 
-        // The column width to wrap text to.
-        val width: Int = 80,
+    // New lines appended to text during wrapping will use this character.
+    // NOTE: Intellij always uses \n character for new lines and UI
+    // components will fail assertion checks if they receive \r\n. The
+    // correct line ending is used when saving the file.
+    private val lineSeparator: String = "\n",
 
-        // The number of display columns that a tab character should represent.
-        val tabWidth: Int = 4,
+    // The column width to wrap text to.
+    val width: Int = 72,
 
-        val useMinimumRaggedness: Boolean = false) {
+    // The number of display columns that a tab character should represent.
+    val tabWidth: Int = 4,
+
+    val useMinimumRaggedness: Boolean = false) {
 
     /**
      * Data about a line that has been split into two pieces: the indent portion
@@ -54,12 +56,14 @@ class CodeWrapper(
 
     /**
      * Wrap ``text`` to the chosen width.
-
+     *
      * Preserve the amount of white space between paragraphs after wrapping
-     * them. A paragraph is defined as text separated by empty lines.
-
+     * them. A paragraph is defined as text separated by empty lines. A line is
+     * considered empty if contains only start of comment characters and a
+     * single ``<p>`` or ``<br>`` HTML tag (this is common in Javadoc).
+     *
      * @param text the text to wrap, which may contain multiple paragraphs.
-     * *
+     *
      * @return text wrapped to `width`.
      */
     fun wrap(text: String?): String {
@@ -71,7 +75,7 @@ class CodeWrapper(
         val result = StringBuilder()
         val paragraphMatcher = paragraphSeparatorPattern.matcher(textWithTabPlaceholders)
         val textLength = textWithTabPlaceholders.length
-        var location: Int = 0
+        var location = 0
 
         while (paragraphMatcher.find()) {
             val paragraph = textWithTabPlaceholders.substring(location, paragraphMatcher.start())
@@ -91,9 +95,7 @@ class CodeWrapper(
             builtResult += lineSeparator
         }
 
-        val resultWithTabs = builtResult.replace(expandedTabPlaceholder, "\t")
-
-        return resultWithTabs
+        return builtResult.replace(expandedTabPlaceholder, "\t")
     }
 
     /**
@@ -106,7 +108,7 @@ class CodeWrapper(
      * *
      * @return text reflowed to chosen width
      */
-    fun wrapParagraph(paragraph: String): String {
+    private fun wrapParagraph(paragraph: String): String {
         val resultBuilder = StringBuilder()
         val emptyCommentPattern = Pattern.compile("$indentRegex\$", Pattern.MULTILINE)
         val emptyCommentMatcher = emptyCommentPattern.matcher(paragraph)
@@ -163,20 +165,19 @@ class CodeWrapper(
      * Reformat the single paragraph in `text` to lines of the chosen width,
      * and return an array of these lines.
      *
-     * Note: C-style multi-line comments are always reflowed to the chosen column width minus
-     * the length of the opening line comment/indent (which is, e.g. 4 for "/** Opening line... */").
-     * This means that continuation lines (e.g. " * I'm a continuation line in") may be slightly
-     * shorter than expected.
+     * Note: C-style multi-line comments are always reflowed to the chosen
+     * column width. This means that the first line might stick out because
+     * it's indent is longer ("&#47;** " instead of " * " on continuation lines).
      *
      * @param text single paragraph of text
      *
      * @return array of lines
-    */
-    fun breakToLinesOfChosenWidth(text:String):MutableList<String> {
-        val firstLineData = splitOnIndent(text)
-        val multiLineContinuation = " * "
-        val firstLineIsCommentOpener = firstLineData.indent.matches("\\s*(/\\*+).*".toRegex())
-        val width = width - firstLineData.indent.length
+     */
+    private fun breakToLinesOfChosenWidth(text:String):MutableList<String> {
+        val firstLineIndent = splitOnIndent(text).indent
+        val firstLineIsCommentOpener = firstLineIndent.matches("\\s*/\\*+\\s*".toRegex())
+        val indentIsWhiteSpaceOnly = firstLineIndent.matches("(\\s|$tabPlaceholder)*".toRegex())
+        val width = if (indentIsWhiteSpaceOnly) width - firstLineIndent.length else width
         val unwrappedText = unwrap(text)
         val lines: Array<String>
         if (useMinimumRaggedness) {
@@ -193,19 +194,19 @@ class CodeWrapper(
         var whitespaceBeforeOpener = ""
 
         if (firstLineIsCommentOpener) {
-            val whitespaceMatcher = Pattern.compile("^\\s*").matcher(firstLineData.indent)
+            val whitespaceMatcher = Pattern.compile("^\\s*").matcher(firstLineIndent)
             if (whitespaceMatcher.find()) {
                 whitespaceBeforeOpener = whitespaceMatcher.group()
             }
         }
 
-        for (i in 0..length - 1) {
+        for (i in 0 until length) {
             val line = lines[i]
-            var lineIndent = firstLineData.indent
+            var lineIndent = firstLineIndent
 
-            if (i > 0) {
+            if (i > 0 && firstLineIsCommentOpener) {
                 // This is a hack. We don't know how much whitespace to use!
-                lineIndent = if (firstLineIsCommentOpener) whitespaceBeforeOpener + multiLineContinuation else lineIndent
+                lineIndent = whitespaceBeforeOpener + " * "
             }
 
             result.add(lineIndent + line)
@@ -223,7 +224,7 @@ class CodeWrapper(
      * *
      * @return one line of text
      */
-    fun unwrap(text: String): String {
+    private fun unwrap(text: String): String {
         if (text.isEmpty()) {
             return text
         }
@@ -233,9 +234,9 @@ class CodeWrapper(
         var lastLineWasCarriageReturn = false
         val length = lines.size
 
-        for (i in 0..length - 1) {
+        for (i in 0 until length) {
             val line = lines[i]
-            val unindentedLine = splitOnIndent(line).rest.trim({ it <= ' ' })
+            val unindentedLine = splitOnIndent(line).rest.trim { it <= ' ' }
 
             if (line.isEmpty()) {
                 // Ignore a line that was just a carriage return/new line.
