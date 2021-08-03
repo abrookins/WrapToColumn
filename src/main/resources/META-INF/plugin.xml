@@ -104,8 +104,7 @@
 
   <application-components>
       <component>
-        <implementation-class>com.andrewbrookins.idea.wrap.config.WrapSettingsProvider
-        </implementation-class>
+        <implementation-class>com.andrewbrookins.idea.wrap.config.WrapSettingsProvider</implementation-class>
       </component>
   </application-components>
 
