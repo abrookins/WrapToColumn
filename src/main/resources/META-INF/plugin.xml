@@ -12,11 +12,20 @@
       how I need it to.
     </p>
     <p>
-      This plugin provides the <strong>Wrap to Column</strong> editor
-      action: Wraps the selected text or, if no text is selected, the
-      current paragraph in which the cursor appears. A paragraph is
-      defined as text separated by blank lines -- including empty lines
-      that start with what looks like comment syntax (e.g., `//   `).
+      This plugin provides two IDE actions:
+      <ul>
+        <li>
+          <strong>Wrap Line to Column</strong>: Wraps selected text or the current line if no
+          text is selected. This is useful for IdeaVim users who wish to pair
+          the command with motions like `vip` (select current paragraph).
+        </li>
+        <li>
+          <strong>Wrap Paragraph to Column</strong>: Wraps the paragraph in which the cursor appears.
+          A paragraph is defined as text offset by blank lines -- including lines that
+          only start with what looks like comment syntax (e.g., `//   `). Selected text
+          is ignored (no selection is needed).
+        </li>
+      </ul>
     </p>
     <p>
       <strong>Note:</strong> As of version 1.0, this plugin supports only IDEA
@@ -123,9 +132,18 @@
 
 
   <actions>
+    <!-- Add your actions here -->
+    <action id="com.andrewbrookins.idea.wrap.WrapAction" class="com.andrewbrookins.idea.wrap.WrapAction"
+            text="Wrap Line to Column"
+            description="Wrap selected text or current line to the currently configured column width.">
+      <add-to-group group-id="EditMenu" anchor="last"/>
+      <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl meta W"/>
+      <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl alt W"/>
+    </action>
+
     <action id="com.andrewbrookins.idea.wrap.WrapParagraphAction" class="com.andrewbrookins.idea.wrap.WrapParagraphAction"
-            text="Wrap to Column"
-            description="Wrap selected text or current paragraph to the configured column width.">
+            text="Wrap Paragraph to Column"
+            description="Wrap paragraph to the currently configured column width.">
       <add-to-group group-id="EditMenu" anchor="last"/>
       <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl meta P"/>
       <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl alt P"/>
