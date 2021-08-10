@@ -25,6 +25,77 @@ intellij {
 patchPluginXml {
     sinceBuild = "141"
     changeNotes = """
-      Add change notes here.<br>
-      <em>most HTML tags may be used</em>"""
+        <b>1.5.0</b>
+    <ul>
+    <li>Fix plugin XML compatibility with newer Intellij versions.</li>
+    <li>Special thanks to <b>Edgars Irmejs</b> and <b>Aleksei Kniazev</b> for fixes!</li>
+    </ul>
+
+    <b>1.4.0</b>
+    <ul>
+    <li>Add a new action: Wrap Paragraph to Column.</li>
+    </ul>
+
+    <b>1.3.2</b>
+    <ul>
+    <li>Add a keyboard shortcut for Windows.</li>
+    </ul>
+
+    <b>1.3.1</b>
+    <ul>
+    <li>Fix "kotlin/jvm/internal/Intrinsics" error found in Intellij 14.1.x-based editors.</li>
+    </ul>
+
+    <b>1.3.0</b>
+    <ul>
+    <li>New feature: Use an optional "minimum raggedness" algorithm. You can enable this in Tools -> Wrap to Column.</li>
+    </ul>
+
+    <b>1.2.0</b>
+    <ul>
+    <li>Reflow text containing tabs based on the configured tab width setting.</li>
+    </ul>
+
+    <b>1.1.0</b>
+    <ul>
+    <li>New feature: Set a column width override in Settings: Tools -> Wrap to Column. Overrides style and global column width settings.</li>
+    </ul>
+
+    <b>1.0.1</b>
+    <ul>
+    <li>Fix a bug in handling continuations of C-style multi-line comments</li>
+    </ul>
+
+    <b>1.0</b>
+    <ul>
+    <li>Use the language-specific right margin setting if one is configured</li>
+    </ul>
+
+    <b>0.1.4</b>
+    <ul>
+    <li>Strip trailing spaces before wrapping</li>
+    <li>Preserve paragraphs within comments</li>
+    </ul>
+
+    <b>0.1.3</b>
+    <ul>
+    <li>Stop adding an erroneous leading space if the first line of the selection is a newline/carriage return.<li>
+    <li>Detect the period "." as a bullet point indentation.</li>
+    </ul>
+
+    <b>0.1.2</b>
+    <ul>
+    <li>Fix plugin for Windows users</l>
+    </ul>
+
+    <b>0.1.1</b>
+    <ul>
+    <li>Better support for multi-line C-style comments.</li>
+    </ul>
+
+    <b>0.1</b>
+    <ul>
+    <li>Initial commit.</li>
+    </ul>     
+    """
 }
