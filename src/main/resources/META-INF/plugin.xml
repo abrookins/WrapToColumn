@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>com.andrewbrookins.wrap_to_column</id>
   <name>Wrap to Column</name>
-  <version>1.5.0</version>
+  <version>1.6.0</version>
   <vendor email="a@andrewbrookins.com" url="http://andrewbrookins.com">Andrew Brookins</vendor>
 
   <description><![CDATA[
@@ -35,6 +35,11 @@
       ]]></description>
 
   <change-notes><![CDATA[
+    <b>1.6.0</b>
+    <ul>
+    <li>Support SQL comments. Thanks, Elijah Carrel!</li>
+    </ul>
+
     <b>1.5.0</b>
     <ul>
     <li>Fix plugin XML compatibility with newer Intellij versions.</li>
