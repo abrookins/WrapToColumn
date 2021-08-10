@@ -196,5 +196,15 @@ class CodeWrapperTests {
 
         assertEquals(expected, text)
     }
+
+    @Test
+    fun testWrapsSqlComments() {
+        val text = wrapper.wrap("-- This is a SQL comment. It may not be an important comment, but it's mine. My own. My precious.")
+
+        val expected = "-- This is a SQL comment. It may not be an important comment, but it's\n" +
+                "-- mine. My own. My precious."
+
+        assertEquals(expected, text)
+    }
 }
 
