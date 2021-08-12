@@ -9,23 +9,22 @@ command in Vim and `fill-paragraph` in Emacs.
 
 Two commands are provided:
 
-* Wrap Line to Column: Wraps selected text or the current line if no text is
+- Wrap Line to Column: Wraps selected text or the current line if no text is
   selected. This is useful for IdeaVim users who wish to pair the command with
   motions like `vip` (select current paragraph).
 
-* Wrap Paragraph to Column: Wraps the paragraph in which the cursor appears.
-  A paragraph is defined as text offset by blank lines -- including lines that
+- Wrap Paragraph to Column: Wraps the paragraph in which the cursor appears. A
+  paragraph is defined as text offset by blank lines -- including lines that
   only start with what looks like comment syntax (e.g., `//   `). Selected text
   is ignored (no selection is needed).
-
+  
 
 ## Setting the maximum line width
 
 The maximum width of wrapped text is based on one of the following settings, in
 this order of priority:
  
-* The "Right margin override" setting found in the Wrap to Column settings
-  panel
+* The "Right margin override" setting found in the Wrap to Column settings panel
 
 * The right column setting configured for the language of the currently active
   editor tab
@@ -54,10 +53,12 @@ To install from the Plugin Repository:
 
 To install the latest zip from GitHub:
 
-* Either clone the repository or download the latest release (https://github.com/abrookins/WrapToColumn/releases)
+* Either clone the repository or download the latest release
+  (https://github.com/abrookins/WrapToColumn/releases)
 * Open your Intellij editor of choice
 * Choose Preferences -> Plugins -> Install plugin from disk
-* Choose the **WrapToColumn.zip** (not the .jar file) file in the source checkout or your Downloads folder
+* Choose the **WrapToColumn.zip** (not the .jar file) file in the source
+  checkout or your Downloads folder
 
 ## Running
 
@@ -76,11 +77,13 @@ The commands to run Wrap Paragraph to Column are:
 Feel free to change these in your keymap (Preferences -> Keymap) or IeaVim
 configuration file!
 
-When using IdeaVim, you can invoke the above commands using the following actions:
+When using IdeaVim, you can invoke the above commands using the following
+actions:
 * Wrap Line to Column: `com.andrewbrookins.idea.wrap.WrapAction`
 * Wrap Paragraph to Column: `com.andrewbrookins.idea.wrap.WrapParagraphAction`
 
-For example, you can add the following line to `.ideavimrc` to emulate Vim's `gq` command:
+For example, you can add the following line to `.ideavimrc` to emulate Vim's
+`gq` command:
 
 ```
 nmap gq :action com.andrewbrookins.idea.wrap.WrapAction<CR>

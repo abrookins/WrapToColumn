@@ -5,7 +5,7 @@ plugins {
 }
 
 group 'com.andrewbrookins.idea.wrap'
-version '1.6.0-SNAPSHOT'
+version '1.7.0-SNAPSHOT'
 
 sourceCompatibility = 1.8
 
@@ -25,6 +25,15 @@ intellij {
 patchPluginXml {
     sinceBuild = "141"
     changeNotes = """
+    <b>1.7.0</b>
+    <ul>
+    <li>Add better support for wrapping lists in Markdown, AsciiDoc, and .txt files</li>
+    <li>Ignore most comment-like symbols in Markdown, AsciiDoc, and .txt files (these symbols are used for formatting, not comments, in these documents)</li>
+    <li>Fix a regression in wrapping to the configured IDE right margin</li>
+    <li>Fix many cases of Wrap Paragraph to Column action wrapping code before or after a comment</li>
+    <li>Fix an issue that required you to select an entire line in order to reflow correctly if there was leading whitespace</li>
+    </ul>
+
     <b>1.6.0</b>
     <ul>
     <li>Support SQL comments. Thanks, Elijah Carrel!</li>

@@ -1,10 +1,6 @@
 package com.andrewbrookins.idea.wrap
 
-import com.andrewbrookins.idea.wrap.config.WrapSettingsProvider
-import com.intellij.openapi.actionSystem.ActionPlaces
-import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.actionSystem.DataContext
-import com.intellij.openapi.actionSystem.LangDataKeys
+import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.Editor
@@ -22,6 +18,13 @@ fun getTextAtOffset(document: Document, wrapper: CodeWrapper, offset: Int): Text
 }
 
 
+fun shouldWrapLine(textData: TextData, isPlaintext: Boolean): Boolean {
+    val isCommentLine = textData.lineData.indent.isNotBlank() && textData.lineData.rest.isNotBlank()
+    val plaintextWithoutSymbol = isPlaintext && textData.lineData.meaningfulSymbol.isBlank()
+    return isCommentLine || plaintextWithoutSymbol
+}
+
+
 class WrapParagraphAction : EditorAction(WrapParagraphAction.WrapHandler()) {
 
     override fun update(e: AnActionEvent) {
@@ -36,13 +39,8 @@ class WrapParagraphAction : EditorAction(WrapParagraphAction.WrapHandler()) {
             super.execute(editor, dataContext)
             ApplicationManager.getApplication().runWriteAction(object : Runnable {
                 override fun run() {
-                    val project = LangDataKeys.PROJECT.getData(dataContext!!)
+                    val project = dataContext?.let { LangDataKeys.PROJECT.getData(it) }
                     val document = editor.document
-                    val columnWidthOverride = WrapSettingsProvider.getInstance().state?.columnWidthOverride
-                    val useMinimumRaggednessAlgorithm = WrapSettingsProvider.getInstance().state?.useMinimumRaggednessAlgorithm ?: false
-                    val columnWidth = columnWidthOverride ?: editor.settings.getRightMargin(project)
-                    val tabWidth = editor.settings.getTabSize(project)
-                    val wrapper = CodeWrapper(width = columnWidth, tabWidth = tabWidth, useMinimumRaggedness = useMinimumRaggednessAlgorithm)
                     val caret = editor.caretModel
                     val startingLine = caret.logicalPosition.line
                     val documentEnd = document.getLineNumber(document.textLength)
@@ -50,18 +48,19 @@ class WrapParagraphAction : EditorAction(WrapParagraphAction.WrapHandler()) {
                     var selectionEnd = document.getLineEndOffset(startingLine)
                     var upwardLineTracker = startingLine
                     var downwardLineTracker = startingLine
+                    val fileIsPlaintext = isPlaintext(dataContext)
+                    val wrapper = getWrapper(project, editor, fileIsPlaintext)
 
                     // Don't try to wrap if the user starts on a line that looks blank.
                     if (getTextAtOffset(document, wrapper, startingLine).lineData.rest.isBlank()) {
                         return
                     }
 
-                    // Starting from the current line, move upward until we reach an empty line
-                    // or the start of the document.
+                    // Starting from the current line, move upward until we reach an empty line, a line of code, or the start of the document.
                     while (upwardLineTracker > 0) {
                         upwardLineTracker--
                         val textData = getTextAtOffset(document, wrapper, upwardLineTracker)
-                        if (textData.lineData.rest.isBlank()) {
+                        if (!shouldWrapLine(textData, fileIsPlaintext) || textData.lineData.rest.isBlank()) {
                             break
                         }
                         selectionStart = textData.lineStart
@@ -72,7 +71,7 @@ class WrapParagraphAction : EditorAction(WrapParagraphAction.WrapHandler()) {
                     while (downwardLineTracker < documentEnd) {
                         downwardLineTracker++
                         val textData = getTextAtOffset(document, wrapper, downwardLineTracker)
-                        if (textData.lineData.rest.isBlank()) {
+                        if (!shouldWrapLine(textData, fileIsPlaintext) || textData.lineData.rest.isBlank()) {
                             break
                         }
                         selectionEnd = textData.lineEnd

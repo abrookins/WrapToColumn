@@ -1,6 +1,8 @@
 package com.andrewbrookins.idea.wrap
 
+import org.apache.commons.lang.StringUtils
 import java.util.regex.Pattern
+
 
 /**
  * Code-aware text wrapper.
@@ -33,23 +35,36 @@ class CodeWrapper(
     private val lineSeparator: String = "\n",
 
     // The column width to wrap text to.
-    val width: Int = 72,
+    val width: Int = 80,
 
     // The number of display columns that a tab character should represent.
     val tabWidth: Int = 4,
 
-    val useMinimumRaggedness: Boolean = false) {
+    val useMinimumRaggedness: Boolean = false,
+
+    // If the first line in reflowed text contained a symbol character, like *,
+    // align subsequent reflowed lines with the space created for that symbol.
+    // This is only useful in text (Markdown, AsciiDoc) files that don't have
+    // comments, but do have tons of symbol usage.
+    val preserveLeadingSymbolSpacing: Boolean = false,
+
+    // Meaningful non-comment symbols, like Markdown lists, etc. Used if
+    // preserveLeadingSymbolSpacing is true.
+    private val meaningfulSymbolRegex: String = "^(\\s+)?(\\*|-|(\\d+\\.))(\\s+)",
+    private val meaningfulSymbolPattern: Pattern = Pattern.compile(meaningfulSymbolRegex)) {
 
     /**
      * Data about a line that has been split into two pieces: the indent portion
      * of the string, if one exists, and the rest of the string.
      */
-    class LineData(indent: String, rest: String) {
+    class LineData(indent: String, meaningfulSymbol: String, rest: String) {
         internal var indent = ""
+        internal var meaningfulSymbol = ""
         internal var rest = ""
 
         init {
             this.indent = indent
+            this.meaningfulSymbol = meaningfulSymbol
             this.rest = rest
         }
     }
@@ -175,11 +190,25 @@ class CodeWrapper(
      */
     private fun breakToLinesOfChosenWidth(text:String):MutableList<String> {
         val firstLineIndent = splitOnIndent(text).indent
-        val firstLineIsCommentOpener = firstLineIndent.matches("\\s*/\\*+\\s*".toRegex())
-        val indentIsWhiteSpaceOnly = firstLineIndent.matches("(\\s|$tabPlaceholder)*".toRegex())
-        val width = if (indentIsWhiteSpaceOnly) width - firstLineIndent.length else width
-        val unwrappedText = unwrap(text)
+        val firstLineIsCommentOpener = firstLineIndent.matches("\\s*(/\\*+|\"\"\"|''')\\s*".toRegex())
+        var unwrappedText = unwrap(text)
         val lines: Array<String>
+        var leadingSymbolWidth = 0
+        var leadingSymbol = ""
+        var width = width
+
+    if (preserveLeadingSymbolSpacing) {
+            val symbolMatcher = meaningfulSymbolPattern.matcher(text)
+            if (symbolMatcher.find()) {
+                leadingSymbol = symbolMatcher.group()
+                leadingSymbolWidth = leadingSymbol.length
+                unwrappedText = unwrappedText.substring(leadingSymbolWidth)
+            }
+            width -= leadingSymbolWidth
+        } else {
+            width -= firstLineIndent.length
+        }
+
         if (useMinimumRaggedness) {
             lines = wrapMinimumRaggedness(unwrappedText, width).dropLastWhile(String::isEmpty).toTypedArray()
         }
@@ -204,9 +233,17 @@ class CodeWrapper(
             val line = lines[i]
             var lineIndent = firstLineIndent
 
+            if (leadingSymbol.isNotBlank() && preserveLeadingSymbolSpacing) {
+                if (i == 0) {
+                    lineIndent = leadingSymbol
+                } else {
+                    lineIndent = StringUtils.repeat(" ", leadingSymbolWidth)
+                }
+            }
+
             if (i > 0 && firstLineIsCommentOpener) {
                 // This is a hack. We don't know how much whitespace to use!
-                lineIndent = whitespaceBeforeOpener + " * "
+                lineIndent = "$whitespaceBeforeOpener * "
             }
 
             result.add(lineIndent + line)
@@ -217,11 +254,11 @@ class CodeWrapper(
 
     /**
      * Convert a hard wrapped paragraph to one line.
-
+     *
      * Indent and comment characters are striped.
-
+     *
      * @param text one paragraph of text, possibly hard-wrapped
-     * *
+     *
      * @return one line of text
      */
     private fun unwrap(text: String): String {
@@ -259,25 +296,33 @@ class CodeWrapper(
 
     /**
      * Split text on indent, including comment characters
-
+     *
      * Example (parsed from left margin):
      * // Comment -> ' // ', 'Comment'
-
+     *
      * @param text text to remove indents from
      * *
      * @return indent string, rest
      */
     fun splitOnIndent(text: String): LineData {
-        val matcher = indentPattern.matcher(text)
-        val lineData = LineData("", text)
+        val indentMatcher = indentPattern.matcher(text)
+        val symbolMatcher = meaningfulSymbolPattern.matcher(text)
+        val lineData = LineData("", "", text)
 
         // Only break on the first indent-worthy sequence found, to avoid any
         // weirdness with comments-embedded-in-comments.
-        if (matcher.find()) {
-            lineData.indent = matcher.group()
-            lineData.rest = text.substring(matcher.end(), text.length).trim({ it <= ' ' })
+        if (indentMatcher.find()) {
+            lineData.indent = indentMatcher.group()
+            lineData.rest = text.substring(indentMatcher.end(), text.length).trim({ it <= ' ' })
             // We might get "/*\n", so strip the newline if so.
             lineData.indent = lineData.indent.replace("[\\r\\n]+".toRegex(), "")
+        }
+
+        // If we suspect a line begins with a "meaningful symbol," save that.
+        // This is important for file types that use comment-like symbols for
+        // things like lists, e.g. Markdown, AsciiDoc.
+        if (symbolMatcher.find()) {
+            lineData.meaningfulSymbol = symbolMatcher.group()
         }
 
         return lineData

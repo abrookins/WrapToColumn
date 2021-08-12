@@ -55,6 +55,7 @@ class WrapSettingsProvider : PersistentStateComponent<WrapSettingsProvider.State
          */
         var columnWidthOverride: Int? = null
         var useMinimumRaggednessAlgorithm: Boolean = false
+        var plaintextFileTypes: String = ".md,.markdown,.adoc,.asciidoc,.txt"
     }
 
     companion object {

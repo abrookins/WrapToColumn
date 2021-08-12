@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>com.andrewbrookins.wrap_to_column</id>
   <name>Wrap to Column</name>
-  <version>1.6.0</version>
+  <version>1.7.0</version>
   <vendor email="a@andrewbrookins.com" url="http://andrewbrookins.com">Andrew Brookins</vendor>
 
   <description><![CDATA[
@@ -35,6 +35,15 @@
       ]]></description>
 
   <change-notes><![CDATA[
+    <b>1.7.0</b>
+    <ul>
+    <li>Add better support for wrapping lists in Markdown, AsciiDoc, and .txt files</li>
+    <li>Ignore most comment-like symbols in Markdown, AsciiDoc, and .txt files (these symbols are used for formatting, not comments, in these documents)</li>
+    <li>Fix a regression in wrapping to the configured IDE right margin</li>
+    <li>Fix many cases of Wrap Paragraph to Column action wrapping code before or after a comment</li>
+    <li>Fix an issue that required you to select an entire line in order to reflow correctly if there was leading whitespace</li>
+    </ul>
+
     <b>1.6.0</b>
     <ul>
     <li>Support SQL comments. Thanks, Elijah Carrel!</li>

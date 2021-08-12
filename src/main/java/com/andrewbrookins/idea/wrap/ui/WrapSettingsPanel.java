@@ -4,6 +4,7 @@ import com.andrewbrookins.idea.wrap.config.WrapSettingsProvider;
 import com.intellij.openapi.util.Comparing;
 
 import javax.swing.*;
+import java.util.Objects;
 
 
 /**
@@ -16,9 +17,11 @@ public class WrapSettingsPanel {
 
     private WrapSettingsProvider settingsProvider;
     private JTextField columnWidthOverrideField;
+    private JTextField plaintextFileTypesField;
     private JPanel panel;
     private JLabel columnWidthOverrideLabel;
     private JCheckBox useMinimumRaggednessAlgorithmCheckBox;
+    private JLabel plaintextFileTypesLabel;
 
     public WrapSettingsPanel() {
         settingsProvider = WrapSettingsProvider.getInstance();
@@ -29,9 +32,11 @@ public class WrapSettingsPanel {
     }
 
     public boolean isModified() {
-        Integer columnOverride = settingsProvider.getState().getColumnWidthOverride();
+        Integer columnOverride = Objects.requireNonNull(settingsProvider.getState()).getColumnWidthOverride();
         Boolean useMinimumRaggednessAlgorithm = settingsProvider.getState().getUseMinimumRaggednessAlgorithm();
-        return !Comparing.equal(columnWidthOverrideField.getText(), String.valueOf(columnOverride)) |
+        String plaintextFileTypes = settingsProvider.getState().getPlaintextFileTypes();
+        return !Objects.equals(columnWidthOverrideField.getText(), String.valueOf(columnOverride)) |
+            !Objects.equals(plaintextFileTypesField.getText(), plaintextFileTypes) |
             !Comparing.equal(useMinimumRaggednessAlgorithmCheckBox.isSelected(), useMinimumRaggednessAlgorithm);
     }
 
@@ -45,17 +50,19 @@ public class WrapSettingsPanel {
             columnWidth = null;
         }
 
-        settingsProvider.getState().setColumnWidthOverride(columnWidth);
+        Objects.requireNonNull(settingsProvider.getState()).setColumnWidthOverride(columnWidth);
         settingsProvider.getState().setUseMinimumRaggednessAlgorithm(useMinimumRaggednessAlgorithmCheckBox.isSelected());
     }
 
     public void reset() {
-        Integer columnOverride = settingsProvider.getState().getColumnWidthOverride();
-        Boolean useMinimumRaggednessAlgorithm = settingsProvider.getState().getUseMinimumRaggednessAlgorithm();
+        Integer columnOverride = Objects.requireNonNull(settingsProvider.getState()).getColumnWidthOverride();
+        boolean useMinimumRaggednessAlgorithm = settingsProvider.getState().getUseMinimumRaggednessAlgorithm();
+        String plaintextFileTypes = settingsProvider.getState().getPlaintextFileTypes();
         String overrideText = columnOverride == null ? "" : String.valueOf(columnOverride);
 
         columnWidthOverrideField.setText(overrideText);
         useMinimumRaggednessAlgorithmCheckBox.setSelected(useMinimumRaggednessAlgorithm);
+        plaintextFileTypesField.setText(plaintextFileTypes);
     }
 }
 
