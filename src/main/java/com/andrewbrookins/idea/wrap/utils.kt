@@ -46,3 +46,13 @@ fun getWrapper(project: Project?, editor: Editor, fileIsPlaintext: Boolean): Cod
 
     return wrapper
 }
+
+
+
+/**
+ * Paragraph1.sldkj slkfdj sdlkj flsdkj flsdkj flsdkj flsdkj flskdj flksdj flksdj flskdj flksdj
+ * flksdj flsdkjf
+ * <p>
+ * Paragraph2. lskaj flskdj flsdkj flsdkjf lsdkj flsdkj flksdj flksdj flksdj flkdsj flsdkj flsdkj
+ * fldksj fldskjf
+ */
