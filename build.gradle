@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'com.andrewbrookins.idea.wrap'
-version '1.8.0-SNAPSHOT'
+version '1.8.0'
 
 sourceCompatibility = 1.8
 
