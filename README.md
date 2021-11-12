@@ -4,52 +4,38 @@ This plugin wraps text to a maximum line width, as defined in the section
 "Setting the maximum line width." It is intended as a replacement for the `gq`
 command in Vim and `fill-paragraph` in Emacs.
 
+## Editor Actions
 
-## Provided actions
+This plugin adds two new _actions_ to Intellij editors that you can all to
+wrap text:
 
-Two commands are provided:
-
-- Wrap Line to Column: Wraps selected text or the current line if no text is
-  selected. This is useful for IdeaVim users who wish to pair the command with
+- Wrap Line to Column: **Wraps selected text or the current line if no text is
+  selected**. This is useful for IdeaVim users who wish to pair the command with
   motions like `vip` (select current paragraph).
 
-- Wrap Paragraph to Column: Wraps the paragraph in which the cursor appears. A
+- Wrap Paragraph to Column: **Wraps all lines in the current paragraph**. A
   paragraph is defined as text offset by blank lines -- including lines that
   only start with what looks like comment syntax (e.g., `//   `). Selected text
   is ignored (no selection is needed).
   
-
-## Setting the maximum line width
-
-The maximum width of wrapped text is based on one of the following settings, in
-this order of priority:
- 
-* The "Right margin override" setting found in the Wrap to Column settings panel
-
-* The right column setting configured for the language of the currently active
-  editor tab
-
-* The editor's default right column setting
-
+To learn how to you call these actions, read the __
 
 ## Installing
 
 Install the plugin from an Intellij editor (like Intellij Ultimate, PyCharm,
 etc.) inside the Preferences -> Plugins window.
 
+### From Within an Intellij Editor
 
-### From the plugin repository
-
-To install from the Plugin Repository:
+Follow these steps to install this plugin from within an Intellij editor:
  
-* Open Preferences -> Plugins and click the Browse repositories ... button
+* Open Preferences -> Plugins and click _Marketplace_
 * Search for "Wrap to column"
 * Choose Wrap to Column
 * Click Install
 * Restart the editor when prompted
 
-
-### To install from GitHub
+### From GitHub
 
 To install the latest zip from GitHub:
 
@@ -60,22 +46,43 @@ To install the latest zip from GitHub:
 * Choose the **WrapToColumn.zip** (not the .jar file) file in the source
   checkout or your Downloads folder
 
-## Running
+## How To Use the Plugin
 
-### Keyboard shortcuts
+To use this plugin, you trigger one of its actions (Wrap Line to Column,
+Wrap Paragraph to Column) with a keyboard shortcut, menu item, IdeaVim
+command, or using [Search Everywhere](https://blog.jetbrains.com/idea/2020/05/when-the-shift-hits-the-fan-search-everywhere/).
 
-The commands to run Wrap Line to Column are:
+Example usage:
+
+**To wrap the line you're currently editing**, run the Wrap Line to Column action.
+
+**To wrap all of the lines in the _paragraph_ that you are editing**, run the Wrap Paragraph to Column action.
+
+**To wrap multiple lines and paragraphs in a file**, select the text to wrap, then run the Wrap Line to Column action (this plugin wraps selected text).
+
+### Keyboard Shortcuts
+
+The keyboard shortcuts for the **Wrap Line to Column** action are:
 
 * Mac: Command + Control + Shift + W
 * PC: Control + Alt + Shift + W
 
-The commands to run Wrap Paragraph to Column are:
+The keyboard shortcuts for the **Wrap Paragraph to Column** action are:
 
 * Mac: Command + Control + Shift + P
 * PC: Control + Alt + Shift + P
 
 Feel free to change these in your keymap (Preferences -> Keymap) or IeaVim
 configuration file!
+
+### Menu Items
+
+Menu items should exist for both commands in the Edit drop-down menu:
+
+* Edit -> Wrap Line to Column
+* Edit -> Wrap Paragraph to Column
+
+### IdeaVim
 
 When using IdeaVim, you can invoke the above commands using the following
 actions:
@@ -89,18 +96,24 @@ For example, you can add the following line to `.ideavimrc` to emulate Vim's
 nmap gq :action com.andrewbrookins.idea.wrap.WrapAction<CR>
 ```
 
-
-### Menu item
-
-Menu items should exist for both commands in the Edit drop-down menu:
-
-* Edit -> Wrap Line to Column
-* Edit -> Wrap Paragraph to Column
-
-
 ## Settings
 
-### Right margin override
+### How Does WrapToColumn Determine the Line Length?
+
+The maximum width of wrapped text is based on one of the following settings, in
+this order of priority:
+ 
+1. The "Right margin override" setting found in the Wrap to Column settings panel
+
+2. The right column setting configured for the language of the currently active
+  editor tab
+
+3. The editor's default right column setting
+
+Read _Overriding the maximum line length_ in this README to learn how to set the
+**right margin override** setting for the WrapToColumn plugin.
+
+### Overriding the Maximum Line Length
 
 By default, this plugin uses your configured global or language-specific right
 margin setting as the column width to wrap at. However, you may provide a column
@@ -108,30 +121,35 @@ width that will override both of these settings.
 
 This setting exists in Settings (Preferences on OS X) -> Tools -> Wrap to Column.
 
-The setting is named "Right margin override" and accepts an integer value.
+The setting is named **Right margin override**. This should be an integer that
+represents the column at which the plugin will wrap text, similar to Intellij's
+"right margin" setting.
 
-
-### Minimum raggedness
+### Minimum Raggedness (Alpha!)
 
 By default, text is wrapped using a greedy line-breaking algorithm. This can
 result in some lines having more whitespace than others.
 
 You can turn on an alternative "minimum raggedness" algorithm in Settings ->
 Tools -> Wrap to Column. When this setting is on, the plugin will reconfigure
-text in a paragraph to produce the least amount of whitespace possible. Try it
-and see if you like it!
+text in a paragraph to produce the least amount of whitespace possible.
 
+This feature is (still!) an **alpha** and may go away. Try it and see if
+you like it!
 
-### Tab width
+### Tab Width Setting
 
 Any lines that contain tabs (or are prefixed with tabs as an indent) will be
-reflowed as if the tabs were characters spaced at your configured tab width.
+reflowed as if the tabs were characters spaced using the **tab size** you have
+set in Intellij for the language you are editing.
 
-This means that the text will look right to you if your tab width is 4, but not
-to your co-maintainer whose tab width is 8. This seems to be the best trade-off.
+This setting exists in the _Code Style_ section of the Intellij settings page.
 
+As a result of this behavior, text will look right to you if your tab width is 4,
+but not to your co-maintainer whose tab width is 8. This seems to be the best
+trade-off.
 
-## A note about monospaced versus variable width fonts
+## Monospaced Versus Variable Width Fonts
 
 This plugin reflows selected text by assuming that each character takes one
 column's worth of space (except tabs, which are expanded to your tab width).
@@ -147,6 +165,7 @@ Anyway, I recommend that you use a monospaced font if you can.
 
 
 ## Roadmap
+
 * Bug fixes
 
 
