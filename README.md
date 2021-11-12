@@ -1,4 +1,4 @@
-# Wrap to Column: an Intellij Plugin
+# Wrap to Column: an Intellij Plugin That Wraps Text
 
 This plugin wraps text to a maximum line width, as defined in the section
 "Setting the maximum line width." It is intended as a replacement for the `gq`
