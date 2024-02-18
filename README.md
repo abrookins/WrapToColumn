@@ -19,9 +19,9 @@ This plugin adds two new _actions_ to IntelliJ editors that you can use to wrap 
 
 - Wrap Paragraph to Column: **Wraps all lines in the current paragraph**. A
   paragraph is defined as text offset by blank lines -- including lines that
-  only start with what looks like comment syntax (e.g., `//   `). Selected text
-  is ignored (no selection is needed).
-  
+  only start with what looks like comment syntax (e.g., `//   `). When any text
+  is selected, wrapping will be constrained to the selected lines.
+
 To learn how to you call these actions, read the __
 
 ## Installing

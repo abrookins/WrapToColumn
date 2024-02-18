@@ -42,8 +42,11 @@ class WrapParagraphAction : EditorAction(WrapParagraphAction.WrapHandler()) {
                     val project = dataContext?.let { LangDataKeys.PROJECT.getData(it) }
                     val document = editor.document
                     val caret = editor.caretModel
+                    val selectionModel = editor.selectionModel
+                    val selectionStartLine = document.getLineNumber(selectionModel.selectionStart)
+                    val selectionEndLine = document.getLineNumber(selectionModel.selectionEnd)
                     val startingLine = caret.logicalPosition.line
-                    val documentEnd = document.getLineNumber(document.textLength)
+                    val documentEndLine = document.getLineNumber(document.textLength)
                     var selectionStart =  document.getLineStartOffset(startingLine)
                     var selectionEnd = document.getLineEndOffset(startingLine)
                     var upwardLineTracker = startingLine
@@ -56,8 +59,11 @@ class WrapParagraphAction : EditorAction(WrapParagraphAction.WrapHandler()) {
                         return
                     }
 
+                    val minimumLine = if (selectionModel.hasSelection()) selectionStartLine else 0
+                    val maximumLine = if (selectionModel.hasSelection()) selectionEndLine else documentEndLine
+
                     // Starting from the current line, move upward until we reach an empty line, a line of code, or the start of the document.
-                    while (upwardLineTracker > 0) {
+                    while (upwardLineTracker > minimumLine) {
                         upwardLineTracker--
                         val textData = getTextAtOffset(document, wrapper, upwardLineTracker)
                         if (!shouldWrapLine(textData, fileIsPlaintext) || textData.lineData.rest.isBlank()) {
@@ -68,7 +74,7 @@ class WrapParagraphAction : EditorAction(WrapParagraphAction.WrapHandler()) {
 
                     // Starting from the current line, move downward until we reach an empty line
                     // or the end of the document.
-                    while (downwardLineTracker < documentEnd) {
+                    while (downwardLineTracker < maximumLine) {
                         downwardLineTracker++
                         val textData = getTextAtOffset(document, wrapper, downwardLineTracker)
                         if (!shouldWrapLine(textData, fileIsPlaintext) || textData.lineData.rest.isBlank()) {

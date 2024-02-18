@@ -22,8 +22,8 @@
         <li>
           <strong>Wrap Paragraph to Column</strong>: Wraps the paragraph in which the cursor appears.
           A paragraph is defined as text offset by blank lines -- including lines that
-          only start with what looks like comment syntax (e.g., `//   `). Selected text
-          is ignored (no selection is needed).
+          only start with what looks like comment syntax (e.g., `//   `). When any text
+          is selected, wrapping will be constrained to the selected lines.
         </li>
       </ul>
     </p>
@@ -38,6 +38,7 @@
     <b>1.9.0</b>
     <ul>
     <li>Fix applying plaintext filetypes option</li>
+    <li>Make Wrap Paragraph to Column action constrain wrapping to selected lines</li>
     </ul>
 
     <b>1.8.0</b>

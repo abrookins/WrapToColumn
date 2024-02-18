@@ -33,6 +33,7 @@ patchPluginXml {
     <b>1.9.0</b>
     <ul>
     <li>Fix applying plaintext filetypes option</li>
+    <li>Make Wrap Paragraph to Column action constrain wrapping to selected lines</li>
     </ul>
 
     <b>1.8.0</b>
