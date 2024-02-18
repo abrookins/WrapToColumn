@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>com.andrewbrookins.wrap_to_column</id>
   <name>Wrap to Column</name>
-  <version>1.8.0</version>
+  <version>1.9.0</version>
   <vendor email="a@andrewbrookins.com" url="http://andrewbrookins.com">Andrew Brookins</vendor>
 
   <description><![CDATA[
@@ -35,6 +35,11 @@
       ]]></description>
 
   <change-notes><![CDATA[
+    <b>1.9.0</b>
+    <ul>
+    <li>Fix applying plaintext filetypes option</li>
+    </ul>
+
     <b>1.8.0</b>
     <ul>
     <li>Fix plugin to support new Intellij versions</li>
@@ -130,7 +135,7 @@
   </change-notes>
 
   <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Build+Number+Ranges for description -->
-  <idea-version since-build="141"/>
+  <idea-version since-build="233"/>
 
   <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
        on how to target different products -->

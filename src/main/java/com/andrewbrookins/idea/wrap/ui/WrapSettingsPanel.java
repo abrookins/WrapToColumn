@@ -52,6 +52,7 @@ public class WrapSettingsPanel {
 
         Objects.requireNonNull(settingsProvider.getState()).setColumnWidthOverride(columnWidth);
         settingsProvider.getState().setUseMinimumRaggednessAlgorithm(useMinimumRaggednessAlgorithmCheckBox.isSelected());
+        settingsProvider.getState().setPlaintextFileTypes(plaintextFileTypesField.getText());
     }
 
     public void reset() {
@@ -65,4 +66,3 @@ public class WrapSettingsPanel {
         plaintextFileTypesField.setText(plaintextFileTypes);
     }
 }
-

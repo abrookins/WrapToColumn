@@ -1,30 +1,40 @@
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.5.20'
-    id "org.jetbrains.intellij" version "1.2.1"
+    id 'org.jetbrains.kotlin.jvm' version '1.9.0'
+    id "org.jetbrains.intellij" version "1.16.1"
 }
 
 group 'com.andrewbrookins.idea.wrap'
-version '1.8.0'
+version '1.9.0'
 
-sourceCompatibility = 1.8
+sourceCompatibility = 1.16
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    testImplementation group: 'junit', name: 'junit', version: '4.12'
+    testImplementation group: 'junit', name: 'junit', version: '4.13.2'
 }
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
-    version = '2021.2'
+    version = '2023.3'
     updateSinceUntilBuild = false
 }
 
+jar {
+    // Specifies a strategy for handling duplicate files
+    duplicatesStrategy = 'exclude'
+}
+
 patchPluginXml {
-    sinceBuild = "141"
+    sinceBuild = "233"
     changeNotes = """
+    <b>1.9.0</b>
+    <ul>
+    <li>Fix applying plaintext filetypes option</li>
+    </ul>
+
     <b>1.8.0</b>
     <ul>
     <li>Fix plugin to support new Intellij versions</li>
@@ -115,6 +125,6 @@ patchPluginXml {
     <b>0.1</b>
     <ul>
     <li>Initial commit.</li>
-    </ul>     
+    </ul>
     """
 }
