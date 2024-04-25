@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>com.andrewbrookins.wrap_to_column</id>
   <name>Wrap to Column</name>
-  <version>1.8.0</version>
+  <version>1.9.0</version>
   <vendor email="a@andrewbrookins.com" url="http://andrewbrookins.com">Andrew Brookins</vendor>
 
   <description><![CDATA[
@@ -16,14 +16,12 @@
       <ul>
         <li>
           <strong>Wrap Line to Column</strong>: Wraps selected text or the current line if no
-          text is selected. This is useful for IdeaVim users who wish to pair
-          the command with motions like `vip` (select current paragraph).
+          text is selected.
         </li>
         <li>
-          <strong>Wrap Paragraph to Column</strong>: Wraps the paragraph in which the cursor appears.
-          A paragraph is defined as text offset by blank lines -- including lines that
-          only start with what looks like comment syntax (e.g., `//   `). Selected text
-          is ignored (no selection is needed).
+          <strong>Wrap Paragraph to Column</strong>: Wraps selected text or the paragraph in
+          which the cursor appears. A paragraph is defined as text offset by blank lines --
+          including lines that only start with what looks like comment syntax (e.g., `//`).
         </li>
       </ul>
     </p>
@@ -35,6 +33,20 @@
       ]]></description>
 
   <change-notes><![CDATA[
+    <b>1.9.0</b>
+    <ul>
+    <li>
+      Wrap Paragraph to Column and Wrap Line to Column now work the same way when
+      you select text: the selected text will be wrapped. They differ only when
+      you do not select text. Wrap Paragraph to Column will wrap the current
+      paragraph, and Wrap Line to Column will wrap the current line.
+    </li>
+    <li>
+      Refactor plugin internals to use AnAction instead of deprecated `execute`
+      method.
+    </li>
+    </ul>
+
     <b>1.8.0</b>
     <ul>
     <li>Fix plugin to support new Intellij versions</li>
@@ -130,7 +142,7 @@
   </change-notes>
 
   <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Build+Number+Ranges for description -->
-  <idea-version since-build="141"/>
+  <idea-version since-build="222.3345.118"/>
 
   <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
        on how to target different products -->
@@ -138,7 +150,7 @@
 
   <application-components>
       <component>
-        <implementation-class>com.andrewbrookins.idea.wrap.config.WrapSettingsProvider</implementation-class>
+        <implementation-class>com.andrewbrookins.idea.wrap.config.WrapSettingsState</implementation-class>
       </component>
   </application-components>
 

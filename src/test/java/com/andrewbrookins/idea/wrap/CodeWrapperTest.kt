@@ -234,5 +234,18 @@ class CodeWrapperTests {
 
         assertEquals(expected, text)
     }
+
+    @Test
+    fun testWrapsPythonDocstrings() {
+        val unwrappedText = """
+            \"\"\"
+            This is a long docstring comment. It goes on and on to explain how the function works. However, I forgot to add line breaks!
+            
+            Except, I didn't forget! Here, I added a line break
+            and then wrote a very short couple of lines.
+            \"\"\"
+        """.trimIndent()
+        val text = wrapper.wrap(unwrappedText.trimIndent())
+    }
 }
 
