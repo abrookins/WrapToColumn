@@ -172,6 +172,14 @@ Anyway, I recommend that you use a monospaced font if you can.
 
 * Bug fixes
 
+## Developing
+
+This project uses gradle.
+
+To run tests, use the `tests` gradle command.
+
+To build the plugin zip, use the `buildPlugin` gradle command.
+
 
 ## License
 

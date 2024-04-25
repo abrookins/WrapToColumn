@@ -1,6 +1,6 @@
 package com.andrewbrookins.idea.wrap.ui;
 
-import com.andrewbrookins.idea.wrap.config.WrapSettingsProvider;
+import com.andrewbrookins.idea.wrap.config.WrapSettingsState;
 import com.intellij.openapi.util.Comparing;
 
 import javax.swing.*;
@@ -15,7 +15,7 @@ import java.util.Objects;
  */
 public class WrapSettingsPanel {
 
-    private WrapSettingsProvider settingsProvider;
+    private WrapSettingsState settingsProvider;
     private JTextField columnWidthOverrideField;
     private JTextField plaintextFileTypesField;
     private JPanel panel;
@@ -24,7 +24,7 @@ public class WrapSettingsPanel {
     private JLabel plaintextFileTypesLabel;
 
     public WrapSettingsPanel() {
-        settingsProvider = WrapSettingsProvider.getInstance();
+        settingsProvider = WrapSettingsState.getInstance();
     }
 
     public JPanel getPanel() {
@@ -51,6 +51,7 @@ public class WrapSettingsPanel {
         }
 
         Objects.requireNonNull(settingsProvider.getState()).setColumnWidthOverride(columnWidth);
+        settingsProvider.getState().setPlaintextFileTypes(plaintextFileTypesField.getText());
         settingsProvider.getState().setUseMinimumRaggednessAlgorithm(useMinimumRaggednessAlgorithmCheckBox.isSelected());
     }
 
