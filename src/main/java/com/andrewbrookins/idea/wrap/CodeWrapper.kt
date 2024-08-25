@@ -201,7 +201,7 @@ class CodeWrapper(
         // Remove docstring symbols from start and end of string
         if (firstLineIsDocstring) {
             correctedText = text.replaceFirst("^\"\"\"|^'''".toRegex(), "")
-            correctedText = text.replaceFirst("\"\"\"\$|'''\$".toRegex(), "")
+            correctedText = correctedText.replaceFirst("\"\"\"\$|'''\$".toRegex(), "")
         }
 
         var unwrappedText = unwrap(correctedText)
