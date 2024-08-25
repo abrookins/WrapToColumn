@@ -354,6 +354,16 @@ class CodeWrapperTests {
             couple of lines.
             '''
             """
+        ),
+        WrapTestCase(
+            "Wraps rust inner doc comments",
+            """
+            //! This is a long docstring comment. It goes on and on to explain how the function works. However, I forgot to add line breaks!
+            """,
+            """
+            //! This is a long docstring comment. It goes on and on to explain how the function
+            //! works. However, I forgot to add line breaks!
+            """
         )
     )
 
