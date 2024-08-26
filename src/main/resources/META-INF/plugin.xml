@@ -36,7 +36,9 @@
      <b>1.9.1</b>
     <ul>
     <li>
-    Finally fix an old bug that caused the plugin to incorrectly wrap code it found around comment lines. You no longer have to select a comment directly adjacent to code to avoid wrapping the code as well. Instead, Wrap Paragraph to Column will wrap only the comment.
+    Finally fix an old bug that caused the plugin to incorrectly wrap code it found around comment lines. You no longer
+    have to select a comment directly adjacent to code to avoid wrapping the code as well. Instead, Wrap Paragraph to
+    Column will wrap only the comment.
     </li>
     </ul>
 
