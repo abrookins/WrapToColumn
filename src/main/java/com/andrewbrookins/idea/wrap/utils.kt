@@ -56,14 +56,7 @@ fun getWrapper(project: Project?, editor: Editor, fileIsPlaintext: Boolean): Cod
 fun shouldWrapLine(textData: TextData, isPlaintext: Boolean, fileExtension: String?): Boolean {
     val isCommentLine = textData.lineData.indent.isNotBlank() && textData.lineData.rest.isNotBlank()
     val plaintextWithoutSymbol = isPlaintext && textData.lineData.meaningfulSymbol.isBlank()
-    var isDocstring = false
-    if (!fileExtension.isNullOrEmpty() && (fileExtension == "py" || fileExtension == "kt")) {
-        val tripleDoubleQuote = "\"\"\""
-        val tripleSingleQuote = "'''"
-        val pattern = ("^\\s*(?:$tripleDoubleQuote|$tripleSingleQuote)\\s*$").toRegex()
-        isDocstring = pattern.matches(textData.lineData.rest.trim())
-    }
-    return isCommentLine || plaintextWithoutSymbol || !isDocstring
+    return isCommentLine || plaintextWithoutSymbol
 }
 
 

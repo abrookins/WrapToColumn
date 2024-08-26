@@ -25,6 +25,5 @@ class MyClass:
         Args:
             number: a number that represents some very interesting property about which I can say quite a lot of words.
         """
-        # TODO: Fix this.
-        # And here is a very long single-line comment above some Python code. Wrapping this paragraph should stop at the code, but it doesn't.
+        # And here is a very long single-line comment above some Python code. Wrapping this paragraph should stop at the code.
         print("hey")
