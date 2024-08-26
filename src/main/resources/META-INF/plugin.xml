@@ -36,6 +36,12 @@
      <b>1.9.1</b>
     <ul>
     <li>
+    From 1.9.0: Wrap Paragraph to Column and Wrap Line to Column now work the same way
+    when you select text: the selected text will be wrapped. They differ only when you do
+    not select text. Wrap Paragraph to Column will wrap the current paragraph, and Wrap
+    Line to Column will wrap the current line.
+    </li>
+    <li>
     Fixed a bug that incorrectly wrapped code adjacent to comments. You no
     longer have to select a comment directly adjacent to code to avoid wrapping
     the code as well. Instead, Wrap Paragraph to Column will wrap only the
