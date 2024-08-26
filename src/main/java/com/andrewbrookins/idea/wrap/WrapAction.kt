@@ -3,6 +3,7 @@ package com.andrewbrookins.idea.wrap
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.util.TextRange
+import org.jetbrains.annotations.NotNull
 
 
 fun isWhitespace(str: String?): Boolean {
@@ -20,6 +21,11 @@ fun isWhitespace(str: String?): Boolean {
 
 
 class WrapAction : AnAction() {
+    @NotNull
+    override fun getActionUpdateThread(): ActionUpdateThread {
+        return ActionUpdateThread.BGT
+    }
+
     override fun update(e: AnActionEvent) {
         e.presentation.isEnabled = true
         e.presentation.isVisible = true
