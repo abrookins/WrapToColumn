@@ -11,7 +11,7 @@ import java.util.regex.Pattern
  * This code was inspired by Nir Soffer's codewrap library: * https://pypi.python.org/pypi/codewrap/
  */
 class CodeWrapper(
-    private val commentRegex: Regex = "(/\\*+|\\*/|\\*|\\.|#+|//+|;+|--|'''|\"\"\")?".toRegex(),
+    private val commentRegex: Regex = "(/\\*+|\\*/|\\*|\\.|#+|//+|;+|--|'''|\"\"\"|>)?".toRegex(),
 
     private val newlineRegex: Regex = "(\\r?\\n)".toRegex(),
 
