@@ -99,6 +99,20 @@ class CodeWrapperTests {
             """
         ),
         WrapTestCase(
+            "Wrap wraps Python comments",
+            """
+            # This is my very long line of text. This is my very long line of text. This is my very long line of text.
+
+            # This is a second paragraph.
+            """,
+            """
+            # This is my very long line of text. This is my very long line of text. This is
+            # my very long line of text.
+
+            # This is a second paragraph.
+            """
+        ),
+        WrapTestCase(
             "Wrap combine two short lines",
             """
             // This is my text.
