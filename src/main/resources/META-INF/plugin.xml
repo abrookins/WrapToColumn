@@ -36,10 +36,16 @@
      <b>1.9.1</b>
     <ul>
     <li>
-    Finally fix an old bug that caused the plugin to incorrectly wrap code it found around comment lines. You no longer
-    have to select a comment directly adjacent to code to avoid wrapping the code as well. Instead, Wrap Paragraph to
-    Column will wrap only the comment.
+    Fixed a bug that incorrectly wrapped code adjacent to comments. You no
+    longer have to select a comment directly adjacent to code to avoid wrapping
+    the code as well. Instead, Wrap Paragraph to Column will wrap only the
+    comment.
     </li>
+    <li>
+    Fixed Markdown blockquote wrapping.
+    </li>
+    <li>
+    Fixed <code>com.intellij.diagnostic.PluginException: `ActionUpdateThread.OLD_EDT` is deprecated and going to be removed soon. 'com.andrewbrookins.idea.wrap.WrapAction' must override `getActionUpdateThread()` and chose EDT or BGT. See ActionUpdateThread javadoc. [Plugin: com.andrewbrookins.wrap_to_column]</code>
     </ul>
 
     <b>1.9.0</b>
