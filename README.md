@@ -22,7 +22,7 @@ This plugin adds two new _actions_ to IntelliJ editors that you can use to wrap 
   only start with what looks like comment syntax (e.g., `//   `). Selected text
   is ignored (no selection is needed).
   
-To learn how to you call these actions, read the __How To Use the Plugin__ section 
+To learn how to you call these actions, read the _How To Use the Plugin_ section 
 in this readme.
 
 ## Installing
