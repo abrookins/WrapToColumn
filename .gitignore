@@ -3,3 +3,5 @@ out
 .ropeproject
 .gradle
 build
+.vscode
+bin/
