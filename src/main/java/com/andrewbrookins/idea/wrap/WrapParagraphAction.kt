@@ -37,7 +37,7 @@ class WrapParagraphAction : AnAction() {
         val startingLine = caret?.logicalPosition?.line ?: return
         val documentEnd = document.getLineNumber(document.textLength)
         val fileIsPlaintext = isPlaintext(dataContext)
-        val fileExtension = getFileExtension(dataContext)
+        // val fileExtension = getFileExtension(dataContext)
         val wrapper = getWrapper(project, editor, fileIsPlaintext)
         val selectionModel = editor.selectionModel
         var start: Int
@@ -69,7 +69,8 @@ class WrapParagraphAction : AnAction() {
                 while (lineTracker in 1 until documentEnd) {
                     lineTracker += direction
                     val textData = getTextAtOffset(document, wrapper, lineTracker)
-                    if (!shouldWrapLine(textData, fileIsPlaintext, fileExtension) || textData.lineData.rest.isBlank()) {
+                    // Pass in file extension?
+                    if (!shouldWrapLine(textData, fileIsPlaintext) || textData.lineData.rest.isBlank()) {
                         break
                     }
                     if (direction == -1) start = textData.lineStart

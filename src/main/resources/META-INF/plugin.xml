@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>com.andrewbrookins.wrap_to_column</id>
   <name>Wrap to Column</name>
-  <version>1.9.1</version>
+  <version>1.9.2</version>
   <vendor email="a@andrewbrookins.com" url="http://andrewbrookins.com">Andrew Brookins</vendor>
 
   <description><![CDATA[
@@ -33,8 +33,11 @@
       ]]></description>
 
   <change-notes><![CDATA[
-     <b>1.9.1</b>
+     <b>1.9.2</b>
     <ul>
+     <li>
+     Fixed a bug that prevented the settings panel from loading.
+    </li>
     <li>
     From 1.9.0: Wrap Paragraph to Column and Wrap Line to Column now work the same way
     when you select text: the selected text will be wrapped. They differ only when you do

@@ -28,14 +28,13 @@ fun isPlaintext(dataContext: DataContext?): Boolean {
 fun getWrapper(project: Project?, editor: Editor, fileIsPlaintext: Boolean): CodeWrapper {
     val columnWidthOverride = WrapSettingsState.getInstance().state.columnWidthOverride
     val useMinimumRaggednessAlgorithm = WrapSettingsState.getInstance().state.useMinimumRaggednessAlgorithm ?: false
-    val columnWidth = columnWidthOverride ?: editor.settings.getRightMargin(project)
     val tabWidth = editor.settings.getTabSize(project)
     val wrapper: CodeWrapper
 
 
     if (fileIsPlaintext) {
         wrapper = CodeWrapper(
-            width = columnWidth,
+            width = columnWidthOverride,
             tabWidth = tabWidth,
             useMinimumRaggedness = useMinimumRaggednessAlgorithm,
             commentRegex = "(//)?".toRegex(),
@@ -44,7 +43,7 @@ fun getWrapper(project: Project?, editor: Editor, fileIsPlaintext: Boolean): Cod
 
     } else {
         wrapper = CodeWrapper(
-            width = columnWidth,
+            width = columnWidthOverride,
             tabWidth = tabWidth,
             useMinimumRaggedness = useMinimumRaggednessAlgorithm
         )
@@ -53,7 +52,8 @@ fun getWrapper(project: Project?, editor: Editor, fileIsPlaintext: Boolean): Cod
     return wrapper
 }
 
-fun shouldWrapLine(textData: TextData, isPlaintext: Boolean, fileExtension: String?): Boolean {
+fun shouldWrapLine(textData: TextData, isPlaintext: Boolean): Boolean {
+    // TODO: File extension?
     val isCommentLine = textData.lineData.indent.isNotBlank() && textData.lineData.rest.isNotBlank()
     val plaintextWithoutSymbol = isPlaintext && textData.lineData.meaningfulSymbol.isBlank()
     return isCommentLine || plaintextWithoutSymbol
