@@ -26,15 +26,17 @@ fun isPlaintext(dataContext: DataContext?): Boolean {
 
 
 fun getWrapper(project: Project?, editor: Editor, fileIsPlaintext: Boolean): CodeWrapper {
+    val doOverrideColumnWidth = WrapSettingsState.getInstance().state.doOverrideColumnWidth
     val columnWidthOverride = WrapSettingsState.getInstance().state.columnWidthOverride
     val useMinimumRaggednessAlgorithm = WrapSettingsState.getInstance().state.useMinimumRaggednessAlgorithm ?: false
+    val columnWidth = if (doOverrideColumnWidth) columnWidthOverride else editor.settings.getRightMargin(project)
     val tabWidth = editor.settings.getTabSize(project)
     val wrapper: CodeWrapper
 
 
     if (fileIsPlaintext) {
         wrapper = CodeWrapper(
-            width = columnWidthOverride,
+            width = columnWidth,
             tabWidth = tabWidth,
             useMinimumRaggedness = useMinimumRaggednessAlgorithm,
             commentRegex = "(//)?".toRegex(),
@@ -43,7 +45,7 @@ fun getWrapper(project: Project?, editor: Editor, fileIsPlaintext: Boolean): Cod
 
     } else {
         wrapper = CodeWrapper(
-            width = columnWidthOverride,
+            width = columnWidth,
             tabWidth = tabWidth,
             useMinimumRaggedness = useMinimumRaggednessAlgorithm
         )
