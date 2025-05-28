@@ -379,6 +379,20 @@ class CodeWrapperTests {
             > incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
             > nostrud exercitation
             """
+        ),
+        WrapTestCase(
+            description = "Wraps Rust parent line comments",
+            rawInput = """
+            //! My foo module
+            //!
+            //! This is the documentation for my foo module. It has some pretty long lines, which I consider a feature and not a bug.
+            """,
+            rawExpectedOutput = """
+            //! My foo module
+            //!
+            //! This is the documentation for my foo module. It has some pretty long lines,
+            //! which I consider a feature and not a bug.
+            """
         )
     )
 
