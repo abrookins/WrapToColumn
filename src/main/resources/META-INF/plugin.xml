@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>com.andrewbrookins.wrap_to_column</id>
   <name>Wrap to Column</name>
-  <version>1.9.2</version>
+  <version>1.9.3</version>
   <vendor email="a@andrewbrookins.com" url="http://andrewbrookins.com">Andrew Brookins</vendor>
 
   <description><![CDATA[
@@ -33,6 +33,14 @@
       ]]></description>
 
   <change-notes><![CDATA[
+    <b>1.9.3</b>
+    <ul>
+    <li>Fixed a bug where wrapping code with inline comments would remove comment markers from continuation lines. (Issue #72, thanks @edgarsi!)</li>
+    <li>Fixed Python docstring wrapping when content is on the same line as the opening quotes. (Issue #65, thanks @edgarsi!)</li>
+    <li>Added support for wrapping Rust parent line comments (<code>//!</code>). (Issue #52, thanks @mshroyer!)</li>
+    <li>Restored optional column width override setting. (Issue #68, thanks @Grimeh!)</li>
+    </ul>
+
      <b>1.9.2</b>
     <ul>
      <li>

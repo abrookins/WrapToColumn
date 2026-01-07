@@ -184,6 +184,28 @@ class CodeWrapper(
     }
 
     /**
+     * Check if a line is "code with inline comment" - i.e., has non-whitespace
+     * content BEFORE a C-style or shell-style inline comment marker.
+     * For example:
+     * - "int x = 0; // comment" -> true (has code before //)
+     * - "// pure comment" -> false (comment marker at start)
+     * - "plain text" -> false (no comment marker)
+     *
+     * This specifically looks for // or # comment markers, not docstrings or
+     * other markers like * or . which appear in regular text.
+     */
+    private fun isCodeWithInlineComment(line: String): Boolean {
+        // Only look for // or # style inline comments (not * or . which appear in text)
+        val codeInlineCommentRegex = "//+!?|#+".toRegex()
+        val inlineMatch = codeInlineCommentRegex.find(line) ?: return false
+
+        // Check if there's non-whitespace content before the comment marker
+        val beforeComment = line.substring(0, inlineMatch.range.first)
+        return beforeComment.isNotBlank()
+    }
+
+
+    /**
      * Reformat the single paragraph in `text` to lines of the chosen width,
      * and return an array of these lines.
      *
@@ -196,6 +218,15 @@ class CodeWrapper(
      * @return array of lines
      */
     private fun breakToLinesOfChosenWidth(text: String): MutableList<String> {
+        val firstLine = text.split("[\\r\\n]+".toRegex()).firstOrNull() ?: text
+
+        // If the first line is code with an inline comment (e.g., "int x = 0; // comment"),
+        // don't wrap - just return the original lines unchanged to avoid corrupting
+        // code or losing comment markers from subsequent pure-comment lines.
+        if (isCodeWithInlineComment(firstLine)) {
+            return text.split("[\\r\\n]+".toRegex()).toMutableList()
+        }
+
         val firstLineIndent = splitOnIndent(text).indent
         val firstLineIsCommentOpener = firstLineIndent.matches("\\s*/\\*+\\s*".toRegex())
         val lines: Array<String>

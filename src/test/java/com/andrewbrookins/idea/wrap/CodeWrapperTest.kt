@@ -417,6 +417,21 @@ class CodeWrapperTests {
             //! This is the documentation for my foo module. It has some pretty long lines,
             //! which I consider a feature and not a bug.
             """
+        ),
+        // Issue #72: Code with inline comment should not be wrapped
+        WrapTestCase(
+            description = "Issue #72: Code with inline comment is not wrapped (preserves lines)",
+            rawInput = """
+            int aa = 0; // test line 1 test line 1 test line 1 test line 1 test line 1 test line 1
+            // test line2 test line2 test line2 test line2
+            // test line3
+            """,
+            rawExpectedOutput = """
+            int aa = 0; // test line 1 test line 1 test line 1 test line 1 test line 1 test line 1
+            // test line2 test line2 test line2 test line2
+            // test line3
+            """,
+            width = 100
         )
     )
 
