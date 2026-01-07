@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NotNull
     storages = [Storage("wrap.xml")]
 )
 class WrapSettingsState : PersistentStateComponent<WrapSettingsState> {
+    var doOverrideColumnWidth: Boolean = false
     var columnWidthOverride: Int = 80
     var useMinimumRaggednessAlgorithm: Boolean = false
     var plaintextFileTypes: String = ".md,.markdown,.adoc,.asciidoc,.txt"
