@@ -1,6 +1,8 @@
 package com.andrewbrookins.idea.wrap.tests
 
 import org.junit.Test
+import org.junit.jupiter.api.DynamicTest
+import org.junit.jupiter.api.TestFactory
 import org.junit.Assert.*
 import com.andrewbrookins.idea.wrap.*
 
@@ -370,6 +372,28 @@ class CodeWrapperTests {
             """
         ),
         WrapTestCase(
+            "Wraps single line Python docstrings",
+            """
+            ''' This is a long docstring comment. It goes on and on to explain how the function works. However, I forgot to add line breaks! '''
+            """,
+            """
+            ''' This is a long docstring comment. It goes on and on to explain how the
+            function works. However, I forgot to add line breaks! '''
+            """
+        ),
+        WrapTestCase(
+            "Wraps Python docstrings that start on the opener line",
+            """
+            ''' This is a long docstring comment. It goes on and on to explain how the function works. However, I forgot to add line breaks!
+            And the comment continues on the next line. '''
+            """,
+            """
+            ''' This is a long docstring comment. It goes on and on to explain how the
+            function works. However, I forgot to add line breaks! And the comment continues
+            on the next line. '''
+            """
+        ),
+        WrapTestCase(
             "Wraps Markdown block quotes",
             """
             > Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation 
@@ -396,16 +420,27 @@ class CodeWrapperTests {
         )
     )
 
-    @Test
-    fun runAllTests() {
-        testCases.forEach { testCase ->
-            val wrapper = CodeWrapper(
-                tabWidth = testCase.tabWidth,
-                width = testCase.width,
-                useMinimumRaggedness = testCase.useMinimumRaggedness
-            )
-            val result = wrapper.wrap(testCase.input)
-            assertEquals(testCase.description, testCase.expectedOutput, result)
+    @TestFactory
+    fun generateTests(): List<DynamicTest> {
+        return testCases.map { testCase ->
+            DynamicTest.dynamicTest(testCase.description) {
+                val wrapper = CodeWrapper(
+                    tabWidth = testCase.tabWidth,
+                    width = testCase.width,
+                    useMinimumRaggedness = testCase.useMinimumRaggedness
+                )
+                val result = wrapper.wrap(testCase.input)
+                if (testCase.expectedOutput != result) {
+                    // Print the full expected and actual output for easier debugging
+                    fail(
+                        "Test failed for case: ${testCase.description}\n\n" +
+                        "Expected:\n${testCase.expectedOutput}\n\n" +
+                        "Actual:\n$result\n"
+                    )
+                } else {
+                    assertEquals(testCase.description, testCase.expectedOutput, result)
+                }
+            }
         }
     }
 }

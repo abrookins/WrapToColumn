@@ -11,21 +11,29 @@ import java.util.regex.Pattern
  * This code was inspired by Nir Soffer's codewrap library: * https://pypi.python.org/pypi/codewrap/
  */
 class CodeWrapper(
-    private val commentRegex: Regex = "(/\\*+|\\*/|\\*|\\.|#+|//+!?|;+|--|'''|\"\"\"|>)?".toRegex(),
+    private val inlineCommentRegex: Regex = "/\\*+|\\*/|\\*|\\.|#+|//+!?|;+|--|>".toRegex(),
+    private val docstringRegex: Regex = "\"\"\"|'''".toRegex(),
+    private val commentRegex: Regex = "($inlineCommentRegex)|($docstringRegex)".toRegex(),
 
     private val newlineRegex: Regex = "(\\r?\\n)".toRegex(),
 
     private val htmlSeparatorsRegex: Regex = "<[pP]>|<[bB][rR] ?/?>".toRegex(),
 
-    // A string that contains only two new lines demarcates a paragraph.
-    private val paragraphSeparatorPattern: Pattern = Pattern.compile(
-        "($newlineRegex)\\s*$commentRegex\\s*($htmlSeparatorsRegex)?$newlineRegex"
-    ),
-
     private val tabPlaceholder: String = "☃",
 
-    // A string containing a comment or empty space is considered an indent.
-    private val indentRegex: String = "^(\\s|$tabPlaceholder)*$commentRegex\\s*($htmlSeparatorsRegex)?",
+    private val emptyCommentRegex: Regex = "(\\s|($tabPlaceholder))*($commentRegex)?\\s*($htmlSeparatorsRegex)?".toRegex(),
+
+    // Lines with no contents demarcate paragraphs. This means lines with only
+    // whitespace or commented whitespace.
+    private val paragraphSeparatorPattern: Pattern = Pattern.compile(
+        "($newlineRegex)($emptyCommentRegex)($newlineRegex)"
+    ),
+    private val emptyCommentLinePattern: Pattern = Pattern.compile("^($emptyCommentRegex)$", Pattern.MULTILINE),
+
+    // A string containing an inline comment or empty space is considered an
+    // indent. This indent is determined from the first line and set for all
+    // result lines.
+    private val indentRegex: String = "^(\\s|$tabPlaceholder)*($inlineCommentRegex)?\\s*($htmlSeparatorsRegex)?",
     private val indentPattern: Pattern = Pattern.compile(indentRegex),
 
     // New lines appended to text during wrapping will use this character.
@@ -125,8 +133,7 @@ class CodeWrapper(
      */
     private fun wrapParagraph(paragraph: String): String {
         val resultBuilder = StringBuilder()
-        val emptyCommentPattern = Pattern.compile("$indentRegex\$", Pattern.MULTILINE)
-        val emptyCommentMatcher = emptyCommentPattern.matcher(paragraph)
+        val emptyCommentMatcher = emptyCommentLinePattern.matcher(paragraph)
         val paragraphLength = paragraph.length
         var location = 0
 
@@ -190,19 +197,12 @@ class CodeWrapper(
      */
     private fun breakToLinesOfChosenWidth(text: String): MutableList<String> {
         val firstLineIndent = splitOnIndent(text).indent
-        val firstLineIsDocstring = text.trimStart().matches("^\"\"\"|^'''".toRegex())
-        val firstLineIsCommentOpener = firstLineIndent.matches("\\s*(/\\*+|\"\"\"|''')\\s*".toRegex())
+        val firstLineIsCommentOpener = firstLineIndent.matches("\\s*/\\*+\\s*".toRegex())
         val lines: Array<String>
         var leadingSymbolWidth = 0
         var leadingSymbol = ""
         var width = width
         var correctedText = text
-
-        // Remove docstring symbols from start and end of string
-        if (firstLineIsDocstring) {
-            correctedText = text.replaceFirst("^\"\"\"|^'''".toRegex(), "")
-            correctedText = correctedText.replaceFirst("\"\"\"\$|'''\$".toRegex(), "")
-        }
 
         var unwrappedText = unwrap(correctedText)
 
