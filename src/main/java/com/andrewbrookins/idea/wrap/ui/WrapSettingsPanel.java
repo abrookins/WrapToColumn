@@ -26,6 +26,17 @@ public class WrapSettingsPanel {
 
     public WrapSettingsPanel() {
         settingsProvider = WrapSettingsState.getInstance();
+
+        // Enable/disable the override field based on checkbox state
+        doOverrideColumnWidthCheckBox.addActionListener(e -> {
+            updateOverrideFieldState();
+        });
+    }
+
+    private void updateOverrideFieldState() {
+        boolean enabled = doOverrideColumnWidthCheckBox.isSelected();
+        columnWidthOverrideField.setEnabled(enabled);
+        columnWidthOverrideLabel.setEnabled(enabled);
     }
 
     public JPanel getPanel() {
@@ -45,12 +56,12 @@ public class WrapSettingsPanel {
 
     public void apply() {
         // TODO: Show an error for non-integer input.
-        Integer columnWidth;
+        int columnWidth;
 
         try {
             columnWidth = Integer.parseInt(columnWidthOverrideField.getText());
         } catch (NumberFormatException e) {
-            columnWidth = null;
+            columnWidth = 80; // Default to 80 if parsing fails
         }
 
         settingsProvider.getState().setDoOverrideColumnWidth(doOverrideColumnWidthCheckBox.isSelected());
@@ -70,6 +81,7 @@ public class WrapSettingsPanel {
         columnWidthOverrideField.setText(overrideText);
         useMinimumRaggednessAlgorithmCheckBox.setSelected(useMinimumRaggednessAlgorithm);
         plaintextFileTypesField.setText(plaintextFileTypes);
+        updateOverrideFieldState();
     }
 }
 
