@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.andrewbrookins.idea.wrap"
-version = "1.9.3"
+version = "1.9.4"
 
 repositories {
     mavenCentral()

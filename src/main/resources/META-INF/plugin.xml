@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>com.andrewbrookins.wrap_to_column</id>
   <name>Wrap to Column</name>
-  <version>1.9.3</version>
+  <version>1.9.4</version>
   <vendor email="a@andrewbrookins.com" url="http://andrewbrookins.com">Andrew Brookins</vendor>
 
   <description><![CDATA[
@@ -33,6 +33,13 @@
       ]]></description>
 
   <change-notes><![CDATA[
+    <b>1.9.4</b>
+    <ul>
+    <li>Fixed wrapping for comments with tab indentation. (Issue #73, thanks @Grimeh!)</li>
+    <li>Fixed inline comments adding extraneous newlines. (Issue #74, thanks @Grimeh!)</li>
+    <li>Fixed selections ending with multiple newlines adding an extra newline.</li>
+    </ul>
+
     <b>1.9.3</b>
     <ul>
     <li>Fixed a bug where wrapping code with inline comments would remove comment markers from continuation lines. (Issue #72, thanks @edgarsi!)</li>
