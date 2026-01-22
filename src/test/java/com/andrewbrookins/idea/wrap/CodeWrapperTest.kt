@@ -196,6 +196,26 @@ class CodeWrapperTests {
             trimIndent = false
         ),
         WrapTestCase(
+            "Wrap retains tab indent",
+            "\tThis is my long indented string. It's too long to fit on one line, uh oh! What will happen?",
+            "\tThis is my long indented string. It's too long to fit on one line, uh oh!\n\tWhat will happen?",
+            trimIndent = false,
+            tabWidth = 4
+        ),
+        WrapTestCase(
+            "Wrap retains space indent on comment",
+            "    // This is my long indented comment. It's too long to fit on one line, uh oh! What will happen?",
+            "    // This is my long indented comment. It's too long to fit on one line, uh\n    // oh! What will happen?",
+            trimIndent = false
+        ),
+        WrapTestCase(
+            "Wrap retains tab indent on comment",
+            "\t// This is my long indented comment. It's too long to fit on one line, uh oh! What will happen?",
+            "\t// This is my long indented comment. It's too long to fit on one line, uh\n\t// oh! What will happen?",
+            trimIndent = false,
+            tabWidth = 4
+        ),
+        WrapTestCase(
             "Wrap handles lines within multiline comment",
             """
             * This is a long line in a multi-line comment block. Note the star at the beginning.

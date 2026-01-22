@@ -201,7 +201,7 @@ class CodeWrapper(
 
         // Check if there's non-whitespace content before the comment marker
         val beforeComment = line.substring(0, inlineMatch.range.first)
-        return beforeComment.isNotBlank()
+        return !beforeComment.matches("^\\s*|$tabPlaceholder*$".toRegex())
     }
 
 
