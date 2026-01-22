@@ -110,15 +110,14 @@ class CodeWrapper(
 
         if (location < textLength) {
             result.append(wrapParagraph(textWithTabPlaceholders.substring(location, textLength)))
+
+            // Keep trailing text newline.
+            if (textWithTabPlaceholders.endsWith(lineSeparator)) {
+                result.append(lineSeparator)
+            }
         }
 
-        var builtResult = result.toString()
-
-        // Keep trailing text newline.
-        if (textWithTabPlaceholders.endsWith(lineSeparator)) {
-            builtResult += lineSeparator
-        }
-
+        val builtResult = result.toString()
         return builtResult.replace(expandedTabPlaceholder, "\t")
     }
 
@@ -224,7 +223,10 @@ class CodeWrapper(
         // don't wrap - just return the original lines unchanged to avoid corrupting
         // code or losing comment markers from subsequent pure-comment lines.
         if (isCodeWithInlineComment(firstLine)) {
-            return text.split("[\\r\\n]+".toRegex()).toMutableList()
+            val l = text.split("[\\r\\n]+".toRegex())
+                .dropLastWhile(String::isEmpty)
+                .toMutableList()
+            return l
         }
 
         val firstLineIndent = splitOnIndent(text).indent

@@ -13,7 +13,8 @@ data class WrapTestCase(
     val trimIndent: Boolean = true,
     val width: Int = 80,
     val tabWidth: Int = 4,
-    val useMinimumRaggedness: Boolean = false
+    val useMinimumRaggedness: Boolean = false,
+    val visibleNewlines: Boolean = false
 ) {
     val input: String? = rawInput?.let { if (trimIndent) it.trimIndent() else it }
     val expectedOutput: String = if (trimIndent) rawExpectedOutput.trimIndent() else rawExpectedOutput
@@ -451,7 +452,22 @@ class CodeWrapperTests {
             // test line2 test line2 test line2 test line2
             // test line3
             """,
-            width = 100
+            width = 50
+        ),
+        WrapTestCase(
+            description = "Preserves inline comment without additional newlines",
+            rawInput = "int aa = 0; // test line 1 test line 1 test line 1 test line 1 test line 1 test line 1\n",
+            rawExpectedOutput = "int aa = 0; // test line 1 test line 1 test line 1 test line 1 test line 1 test line 1\n",
+            trimIndent = false,
+            visibleNewlines = true
+        ),
+        WrapTestCase(
+            description = "Wrap preserves newlines",
+            rawInput = "// test line 1 test line 1 test line 1 test line 1 test line 1 test line 1\n\n",
+            rawExpectedOutput = "// test line 1 test line 1 test line 1 test line 1 test line\n// 1 test line 1\n\n",
+            trimIndent = false,
+            width = 60,
+            visibleNewlines = true
         )
     )
 
@@ -467,10 +483,12 @@ class CodeWrapperTests {
                 val result = wrapper.wrap(testCase.input)
                 if (testCase.expectedOutput != result) {
                     // Print the full expected and actual output for easier debugging
+                    val expected = if (testCase.visibleNewlines) testCase.expectedOutput.replace("\n", "\\n") else testCase.expectedOutput
+                    val actual = if (testCase.visibleNewlines) result.replace("\n", "\\n") else result
                     fail(
                         "Test failed for case: ${testCase.description}\n\n" +
-                        "Expected:\n${testCase.expectedOutput}\n\n" +
-                        "Actual:\n$result\n"
+                        "Expected:\n$expected\n\n" +
+                        "Actual:\n$actual\n"
                     )
                 } else {
                     assertEquals(testCase.description, testCase.expectedOutput, result)
